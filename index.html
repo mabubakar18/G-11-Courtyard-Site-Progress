@@ -159,6 +159,10 @@ td.rangecell{text-align:left;white-space:normal;min-width:220px}
 .src li{margin:8px 0;font-size:15px}
 .src a{color:var(--green-2);word-break:break-word}
 
+/* ---- full-page background photo, faded ---- */
+.bgl{position:fixed;inset:0;z-index:-2;background-size:cover;background-position:center 55%;background-repeat:no-repeat;opacity:0;transition:opacity 1.2s ease;pointer-events:none}
+.bgl.on{opacity:1}
+#bgShade{position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(234,242,238,.78) 0%,rgba(244,245,240,.86) 55%,rgba(247,243,234,.92) 100%)}
 /* ---- picture banners (dimmed) ---- */
 .card{position:relative;overflow:hidden}
 .card>*:not(.banner){position:relative;z-index:1}
@@ -217,6 +221,9 @@ td.sec,th.sec{border-left:3px solid var(--green)!important}
 
 </head>
 <body>
+<div id="bgA" class="bgl on" aria-hidden="true"></div>
+<div id="bgB" class="bgl" aria-hidden="true"></div>
+<div id="bgShade" aria-hidden="true"></div>
 <div class="wrap">
 
 <header class="hero">
@@ -479,11 +486,18 @@ const MEP = {"cols": [{"section": "FIRE SAFETY", "item": "Sprinkler & hose pipin
 const GM = {"levels": [{"label": "Ground floor", "gutka": [0.75, 0.95, 0, 0.05], "marble": [0, 0, 0, 0], "avg": 0.21875}, {"label": "Mezzanine", "gutka": [0.75, 1, 0, 0.05], "marble": [0, 0, 0, 0], "avg": 0.225}, {"label": "1st floor", "gutka": [0.75, 0.95, 0, 0.05], "marble": [0, 0, 0, 0], "avg": 0.21875}, {"label": "2nd floor", "gutka": [0.75, 0.95, 0, 0], "marble": [0, 0, 0, 0], "avg": 0.2125}, {"label": "3rd floor", "gutka": [0.75, 0.95, 0, 0], "marble": [0, 0, 0, 0], "avg": 0.2125}, {"label": "4th floor", "gutka": [0.05, 0.1, 0, 0], "marble": [0, 0, 0, 0], "avg": 0.01875}, {"label": "5th floor", "gutka": [0, 0, 0, 0], "marble": [0, 0, 0, 0], "avg": 0}, {"label": "6th floor", "gutka": [0, 0, 0, 0], "marble": [0, 0, 0, 0], "avg": 0}, {"label": "7th floor", "gutka": [0, 0, 0, 0], "marble": [0, 0, 0, 0], "avg": 0}, {"label": "8th floor", "gutka": [0, 0, 0, 0], "marble": [0, 0, 0, 0], "avg": 0}, {"label": "9th floor", "gutka": [0, 0, 0, 0], "marble": [0, 0, 0, 0], "avg": 0}, {"label": "Roof / parapet", "gutka": [0, 0, 0, 0], "marble": [0, 0, 0, 0], "avg": 0}], "courtyard": [{"label": "Ground floor", "vals": ["NA", "NA", "NA", "NA"], "avg": 0}, {"label": "Mezzanine", "vals": ["NA", "NA", "NA", "NA"], "avg": 0}, {"label": "1st floor", "vals": ["NA", "NA", "NA", "NA"], "avg": 0}, {"label": "2nd floor", "vals": ["NA", "NA", "NA", "NA"], "avg": 0}, {"label": "3rd floor", "vals": [0, 0, 1, 0], "avg": 0.25}, {"label": "4th floor", "vals": [0, 0, 0, 0], "avg": 0}, {"label": "5th floor", "vals": [0, 0, 0, 0], "avg": 0}, {"label": "6th floor", "vals": [0, 0, 0, 0], "avg": 0}, {"label": "7th floor", "vals": [0, 0, 0, 0], "avg": 0}, {"label": "8th floor", "vals": [0, 0, 0, 0], "avg": 0}, {"label": "9th floor", "vals": [0, 0, 0, 0], "avg": 0}, {"label": "Roof / parapet", "vals": [0, 0, 0, 0], "avg": 0}], "notes": [[20, "Notes / scope:"], [44, "Notes / scope:"]], "overall": {"label": "Overall", "gutka": [0.316666666666667, 0.408333333333333, 0, 0.0125], "marble": [0, 0, 0, 0], "avg": 0.0921875, "gutka_avg": 0.184375, "marble_avg": 0}, "courtyard_overall": {"vals": [0, 0, 0.125, 0], "avg": 0.03125}};
 const BG = { home:'corner-day', today:'hero', progress:{summary:'corner-day',grey:['photos/g1.jpg','photos/g2.jpg'],fire:'front-entrance',plmb:'corner-left',mech:'front-balconies',elec:'side-elevation',gutka:'photos/g3.jpg',finishing:'night-concept',wood:'corner-left',floors:'hero'}, rooms:{room:'hero',types:'side-elevation'}, log:'side-elevation', design:'corner-day', open:'hero', about:'front-entrance' };
 let bgTimer = null;
+function photoPath(n) { return n === 'hero' ? 'hero.jpg' : (n.indexOf('/') > -1 ? n : 'renders/' + n + '.jpg'); }
+function setPageBg(path) {
+  const A = document.getElementById('bgA'), B = document.getElementById('bgB');
+  const next = A.classList.contains('on') ? B : A, prev = next === A ? B : A;
+  next.style.backgroundImage = "url('" + path + "')";
+  next.classList.add('on'); prev.classList.remove('on');
+}
 function setBanner(tab, sub) {
   clearInterval(bgTimer); bgTimer = null;
   const v = BG[tab];
   let name = typeof v === 'object' ? (v[sub] || Object.values(v)[0]) : v;
-  const paint = n => document.querySelectorAll('#p-' + tab + ' .banner').forEach(b => b.style.setProperty('--img', n === 'hero' ? "url('hero.jpg')" : (n.indexOf('/') > -1 ? "url('" + n + "')" : "url('renders/" + n + ".jpg')")));
+  const paint = n => { setPageBg(photoPath(n)); document.querySelectorAll('#p-' + tab + ' .banner').forEach(b => b.style.setProperty('--img', "url('" + photoPath(n) + "')")); };
   if (Array.isArray(name)) {
     let k = 0; paint(name[0]);
     bgTimer = setInterval(() => { k = (k + 1) % name.length; paint(name[k]); }, 7000);
@@ -755,6 +769,7 @@ function parseHash() {
   show(tab, sub || (SUBS[tab] ? SUBS[tab][0] : null), false);
 }
 document.getElementById('sub-gutka').innerHTML = gutkaView();
+document.getElementById('bgA').style.backgroundImage = "url('hero.jpg')";
 parseHash();
 </script>
 <script>
