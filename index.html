@@ -663,11 +663,11 @@ function renderChips(tab, sub) {
     const box = document.getElementById('chips-progress'), box2 = document.getElementById('chips2-progress');
     document.getElementById('tabset-progress').className = 'tabset ' + cl.cls;
     box.innerHTML = CLUSTERS.map(c => '<button class="tab" role="tab" aria-current="' + (c.id === cl.id) + '" data-sub="' + c.subs[0] + '">' + c.label + '</button>').join('');
-    box.querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => show('progress', b.dataset.sub, true)));
+    box.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => show('progress', b.dataset.sub, true)));
     if (cl.subs.length > 1) {
       box2.hidden = false;
       box2.innerHTML = cl.subs.map(s => '<button class="subtab" role="tab" aria-current="' + (s === sub) + '" data-sub="' + s + '">' + SUB_LABEL[s] + '</button>').join('');
-      box2.querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => show('progress', b.dataset.sub, true)));
+      box2.querySelectorAll('.subtab').forEach(b => b.addEventListener('click', () => show('progress', b.dataset.sub, true)));
     } else { box2.hidden = true; box2.innerHTML = ''; }
     return;
   }
