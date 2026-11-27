@@ -202,6 +202,9 @@ td.rangecell{text-align:left;white-space:normal;min-width:220px}
 .day-meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;margin-bottom:10px}
 .daytab th.name,.daytab td.name{min-width:120px;text-align:left}
 .day-sub{margin:16px 0 6px;font-size:15px;color:#0E4A36}
+tr.off td{background:#F4F6F5;color:#A9B5AE}
+tr.off td.name{font-weight:500}
+.e-floors .chip.off{opacity:.4;cursor:not-allowed}
 .seg{display:flex;gap:4px;background:#EEF4F0;border-radius:999px;padding:4px;margin:0 0 12px}
 .seg-b{flex:1;border:0;background:none;border-radius:999px;padding:9px 10px;font:inherit;font-weight:600;color:#0E4A36;cursor:pointer}
 .seg-b[aria-selected=true]{background:#0E4A36;color:#fff}
@@ -719,7 +722,7 @@ function gutkaView() {
   const rows = GM.levels.map(l => '<tr><td class="name">' + l.label + '</td>' + l.gutka.map(v => gmv(v)).join('') + l.marble.map((v, i) => (i === 0 ? '<td class="' + cls(v) + ' sec">' : '<td class="' + cls(v) + '">') + pct(v) + '</td>').join('') + '<td class="' + cls(l.avg) + '"><b>' + pct(l.avg) + '</b></td></tr>').join('');
   const total = '<tr class="total"><td class="name">OVERALL</td>' + o.gutka.map(v => gmv(v)).join('') + o.marble.map((v, i) => (i === 0 ? '<td class="' + cls(v) + ' sec">' : '<td class="' + cls(v) + '">') + pct(v) + '</td>').join('') + '<td class="' + cls(o.avg) + '"><b>' + pct(o.avg) + '</b></td></tr>';
   const t1 = '<div class="scroll"><table><thead>' + head1 + head2 + '</thead><tbody>' + rows + total + '</tbody></table></div>';
-  const crow = GM.courtyard.map(l => '<tr><td class="name">' + l.label + '</td>' + l.vals.map(v => gmv(v)).join('') + '<td class="' + cls(l.avg) + '"><b>' + pct(l.avg) + '</b></td></tr>').join('');
+  const crow = GM.courtyard.map(l => courtOff('court_gutka', l.label) ? '<tr class="off"><td class="name">' + l.label + '</td><td colspan="5">Not applicable</td></tr>' : '<tr><td class="name">' + l.label + '</td>' + l.vals.map(v => gmv(v)).join('') + '<td class="' + cls(l.avg) + '"><b>' + pct(l.avg) + '</b></td></tr>').join('');
   const t2 = '<div class="scroll" style="margin-top:14px"><table><thead><tr class="trade"><th class="name" rowspan="2">Level</th><th colspan="4">Gutka, courtyard sides</th><th rowspan="2">Level avg</th></tr><tr class="items"><th>Front (NW)</th><th>Right (SW)</th><th>Rear (SE)</th><th>Left (NE)</th></tr></thead><tbody>' + crow + '</tbody></table></div>';
   return tiles + '<div style="margin-top:14px">' + t1 + '</div>' + '<h3 style="margin-top:18px">Courtyard</h3>' + t2;
 }
@@ -786,6 +789,11 @@ const ELEV_ITEMS = [
 ];
 STAIRS.stairs.forEach((st, i) => ELEV_ITEMS.push({ key: 'stair' + (i + 1), label: st.name.replace('-', ' ') + ' (stairs)', sides: STAIRS.sides, levels: st.levels }));
 const elevItem = key => ELEV_ITEMS.find(x => x.key === key);
+/* Courtyard elevations exist only from the 3rd floor up; levels below are dimmed and locked. */
+const COURT_KEYS = ['court_plaster', 'court_gutka'];
+const COURT_FROM = '3rd floor';
+const courtOff = (key, label) => COURT_KEYS.includes(key) && LEVEL_ORDER.indexOf(label) < LEVEL_ORDER.indexOf(COURT_FROM);
+const LEVEL_ORDER = ['Basement-02','Basement-01','Lower ground','Ground floor','Mezzanine','1st floor','2nd floor','3rd floor','4th floor','5th floor','6th floor','7th floor','8th floor','9th floor','Roof / parapet','Roof'];
 /* MEP detail items per room, and the trade totals they feed (heads index). */
 const MEP_ITEMS = MEP_ROOM.items.map((label, i) => ({ label, section: MEP_ROOM.sections[i] }));
 const TRADE_IDX = { 'FIRE SAFETY': 6, 'PLUMBING': 7, 'MECHANICAL (HVAC)': 8, 'ELECTRICAL': 9 };
@@ -853,6 +861,7 @@ function renderDay() {
   /* Elevation items for the day: one table per item, a row per level, four sides. */
   const elevTabs = ELEV_ITEMS.map(it => {
     const rws = it.levels.map(L => {
+      if (courtOff(it.key, L.label)) return '<tr class="off"><td class="name">' + esc(L.label) + '</td><td colspan="' + (it.sides.length + 1) + '">Not applicable</td></tr>';
       const vals = it.sides.map((_, i) => elevValue(rec, it.key, L.label, i));
       const got = vals.filter(x => x !== null);
       const av = got.length ? got.reduce((a, b) => a + b, 0) / got.length : null;
@@ -972,7 +981,7 @@ function setupEntry(db) {
   function paintFloors() { floorsEl.querySelectorAll('.chip').forEach(b => b.setAttribute('aria-selected', b.dataset.floor === floor ? 'true' : 'false')); }
   function paintLevels() {
     const it = elevItem(elevSel.value);
-    levelsEl.innerHTML = it.levels.map(L => '<button type="button" class="chip" data-level="' + esc(L.label) + '" aria-selected="' + (L.label === level ? 'true' : 'false') + '">' + esc(L.label) + '</button>').join('');
+    levelsEl.innerHTML = it.levels.map(L => { const off = courtOff(it.key, L.label); return '<button type="button" class="chip' + (off ? ' off' : '') + '" data-level="' + esc(L.label) + '" aria-selected="' + (L.label === level ? 'true' : 'false') + '"' + (off ? ' disabled' : '') + '>' + esc(L.label) + '</button>'; }).join('');
   }
   function paintStatus() {
     statusEl.textContent = meta.status === 'published' ? 'Published ' + stamp(meta.publishedAt) : (meta.status === 'draft' ? 'Draft saved ' + stamp(meta.updated) : 'Not entered yet. Starts from the workbook figures.');
@@ -1105,7 +1114,7 @@ function setupEntry(db) {
   floorsEl.addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; floor = b.dataset.floor; paintFloors(); paintRooms(); });
   levelsEl.addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; level = b.dataset.level; paintLevels(); paintRooms(); });
   itemSel.addEventListener('change', paintRooms);
-  elevSel.addEventListener('change', () => { level = elevItem(elevSel.value).levels[0].label; paintLevels(); paintRooms(); });
+  elevSel.addEventListener('change', () => { const it = elevItem(elevSel.value); level = it.levels.find(L => !courtOff(it.key, L.label)).label; paintLevels(); paintRooms(); });
   dateIn.addEventListener('change', load);
   document.getElementById('e-save').addEventListener('click', () => save(false));
   document.getElementById('e-pub').addEventListener('click', () => save(true));
