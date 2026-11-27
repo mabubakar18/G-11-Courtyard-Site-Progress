@@ -43,7 +43,7 @@ p{margin:0 0 10px;max-width:70ch}
 .dock button{font:inherit;border:0;background:transparent;color:var(--muted);border-radius:18px;min-height:56px;padding:6px 2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;font-size:12.5px;font-weight:600;transition:background .25s ease,color .25s ease}
 .dock button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .dock button[aria-current="true"]{background:var(--green);color:#fff;box-shadow:0 8px 18px -10px rgba(14,74,54,.9)}
-.dock button:focus-visible,.chip:focus-visible,.item:focus-visible,.sheet button:focus-visible,.fab:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.dock button:focus-visible,.item:focus-visible,.sheet button:focus-visible,.fab:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 
 /* ---- floating questions button ---- */
 .fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(max(12px,env(safe-area-inset-bottom,0px)) + 74px);z-index:49;border:0;cursor:pointer;background:var(--gold);color:#1B1406;font:inherit;font-weight:700;font-size:15px;border-radius:999px;padding:13px 18px;display:flex;gap:8px;align-items:center;box-shadow:0 14px 30px -12px rgba(120,80,10,.7)}
@@ -93,10 +93,23 @@ ul.clean li{margin:6px 0}
 .lead{font-size:18px;color:var(--ink);max-width:70ch}
 
 /* ---- sub-section chips ---- */
-.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 12px;margin:-2px -2px 0;scrollbar-width:none}
-.chips::-webkit-scrollbar{display:none}
-.chip{flex:0 0 auto;font:inherit;font-size:15px;font-weight:600;color:var(--green);background:var(--green-3);border:0;border-radius:999px;padding:10px 16px;min-height:44px;cursor:pointer;transition:background .2s ease}
-.chip[aria-current="true"]{background:var(--gold);color:#1B1406}
+/* ---- tabs: flat underline bar, attached sub-tabs, dimmed when inactive ---- */
+.tabset{--cc:var(--green);--tint:#E6F1EB;margin:-2px -2px 14px}
+.tabset.c-grey{--cc:#6B7078;--tint:#ECEEF0}
+.tabset.c-mep{--cc:var(--green-2);--tint:#E3F0E8}
+.tabset.c-fin{--cc:#B5771F;--tint:#FBF0DA}
+.tabset.c-glance{--cc:var(--green);--tint:#E6F1EB}
+.tabbar{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid #CFDDD5}
+.tabbar::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;position:relative;font:inherit;font-size:15px;font-weight:700;color:var(--ink);background:transparent;border:0;padding:12px 12px 12px;min-height:46px;cursor:pointer;opacity:.5;transition:opacity .2s ease,color .2s ease;white-space:nowrap}
+.tab:hover{opacity:.8}
+.tab[aria-current="true"]{opacity:1;color:var(--cc)}
+.tab[aria-current="true"]:after{content:"";position:absolute;left:8px;right:8px;bottom:-1px;height:4px;border-radius:4px 4px 0 0;background:var(--cc)}
+.subbar{display:flex;flex-wrap:wrap;gap:4px;background:var(--tint);border-radius:0 0 14px 14px;padding:6px 6px 8px}
+.subbar::-webkit-scrollbar{display:none}
+.subtab{flex:0 0 auto;font:inherit;font-size:14px;font-weight:600;color:var(--ink);background:transparent;border:0;border-radius:10px;padding:9px 12px;min-height:42px;cursor:pointer;opacity:.5;transition:opacity .2s ease,background .2s ease;white-space:nowrap}
+.subtab[aria-current="true"]{opacity:1;background:#fff;color:var(--cc);font-weight:800;box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.tab:focus-visible,.subtab:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 
 /* ---- tables ---- */
 .legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:14px;color:var(--muted);margin:12px 0 0}
@@ -153,11 +166,6 @@ td.rangecell{text-align:left;white-space:normal;min-width:220px}
 .c-glance{--cc:var(--green)} .c-grey{--cc:#6B7078} .c-mep{--cc:var(--green-2)} .c-fin{--cc:var(--gold)}
 .cluster .item{min-height:48px;padding-left:24px}
 .cluster.c-grey .item:hover,.cluster.c-grey .item[aria-current="true"]{background:#E7E9EC}
-.chip.c-grey{background:#E3E5E8;color:#3E434A}
-.chip.c-grey[aria-current="true"]{background:#6B7078;color:#fff}
-.chip.c-mep[aria-current="true"]{background:var(--green-2);color:#fff}
-.chip.c-fin[aria-current="true"]{background:var(--gold);color:#1B1406}
-.chips2{padding-top:0;margin-top:-4px}
 .glance{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 .gcard{background:#fff;border-radius:18px;padding:14px 14px 10px;box-shadow:0 10px 24px -18px rgba(14,74,54,.5);border-top:6px solid var(--cc);min-width:0}
 .gcard.c-grey{--cc:#6B7078;background:#F5F6F7} .gcard.c-mep{--cc:var(--green-2)} .gcard.c-fin{--cc:var(--gold)} .gcard.c-glance{--cc:var(--green)}
@@ -277,8 +285,10 @@ td.sec,th.sec{border-left:3px solid var(--green)!important}
 <!-- PROGRESS -->
 <section class="panel" data-panel="progress" id="p-progress" hidden>
   <div class="card">
-    <div class="chips" id="chips-progress" role="tablist"></div>
-    <div class="chips chips2" id="chips2-progress" role="tablist" hidden></div>
+    <div class="tabset c-glance" id="tabset-progress">
+      <div class="tabbar" id="chips-progress" role="tablist"></div>
+      <div class="subbar" id="chips2-progress" role="tablist" hidden></div>
+    </div>
     <div id="sub-summary" class="sub"></div>
     <div id="sub-grey" class="sub" hidden></div>
     <div id="sub-fire" class="sub" hidden></div>
@@ -300,7 +310,7 @@ td.sec,th.sec{border-left:3px solid var(--green)!important}
 <!-- ROOMS -->
 <section class="panel" data-panel="rooms" id="p-rooms" hidden>
   <div class="card">
-    <div class="chips" id="chips-rooms" role="tablist"></div>
+    <div class="tabset c-glance" id="tabset-rooms"><div class="tabbar" id="chips-rooms" role="tablist"></div></div>
     <div id="sub-room" class="sub">
       <div class="controls">
         <label>Floor <select id="fFloor"></select></label>
@@ -651,19 +661,20 @@ function renderChips(tab, sub) {
   if (tab === 'progress') {
     const cl = CLUSTERS.find(c => c.subs.includes(sub)) || CLUSTERS[0];
     const box = document.getElementById('chips-progress'), box2 = document.getElementById('chips2-progress');
-    box.innerHTML = CLUSTERS.map(c => '<button class="chip ' + c.cls + '" role="tab" aria-current="' + (c.id === cl.id) + '" data-sub="' + c.subs[0] + '">' + c.label + '</button>').join('');
+    document.getElementById('tabset-progress').className = 'tabset ' + cl.cls;
+    box.innerHTML = CLUSTERS.map(c => '<button class="tab" role="tab" aria-current="' + (c.id === cl.id) + '" data-sub="' + c.subs[0] + '">' + c.label + '</button>').join('');
     box.querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => show('progress', b.dataset.sub, true)));
     if (cl.subs.length > 1) {
       box2.hidden = false;
-      box2.innerHTML = cl.subs.map(s => '<button class="chip ' + cl.cls + '" role="tab" aria-current="' + (s === sub) + '" data-sub="' + s + '">' + SUB_LABEL[s] + '</button>').join('');
+      box2.innerHTML = cl.subs.map(s => '<button class="subtab" role="tab" aria-current="' + (s === sub) + '" data-sub="' + s + '">' + SUB_LABEL[s] + '</button>').join('');
       box2.querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => show('progress', b.dataset.sub, true)));
     } else { box2.hidden = true; box2.innerHTML = ''; }
     return;
   }
   const box = document.getElementById('chips-' + tab);
   if (!box) return;
-  box.innerHTML = SUBS[tab].map(s => '<button class="chip" role="tab" aria-current="' + (s === sub) + '" data-sub="' + s + '">' + SUB_LABEL[s] + '</button>').join('');
-  box.querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => show(tab, b.dataset.sub, true)));
+  box.innerHTML = SUBS[tab].map(s => '<button class="tab" role="tab" aria-current="' + (s === sub) + '" data-sub="' + s + '">' + SUB_LABEL[s] + '</button>').join('');
+  box.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => show(tab, b.dataset.sub, true)));
 }
 function setDock(tab) {
   document.querySelectorAll('.dock [data-go]').forEach(b => b.setAttribute('aria-current', b.dataset.go === tab ? 'true' : 'false'));
