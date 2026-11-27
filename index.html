@@ -281,6 +281,29 @@ td.sec,th.sec{border-left:3px solid var(--green)!important}
   .scroll table th,.scroll table td{padding-top:5px;padding-bottom:5px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+
+/* Home summary and critical delays */
+.hs-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px}
+.hs-head h2{margin:0}
+.hs-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.hs-tile{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;min-width:0}
+.hs-title{display:flex;justify-content:space-between;align-items:baseline;gap:8px;color:var(--green);text-decoration:none;font-family:var(--display);font-weight:700;font-size:16px}
+.hs-title b{font-size:18px}
+.hs-bar{height:6px;background:var(--line);border-radius:4px;overflow:hidden;margin:8px 0 4px}
+.hs-bar i{display:block;height:100%;background:var(--green-2)}
+.hs-list{list-style:none;margin:6px 0 0;padding:0}
+.hs-list a{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-top:1px solid var(--line);color:var(--ink);text-decoration:none;font-size:13px}
+.hs-list a span{min-width:0;overflow-wrap:anywhere}
+.hs-list b{white-space:nowrap}
+.dl-card{margin-top:14px}
+.dl-list{margin:8px 0 0;padding-left:20px}
+.dl-list li{margin:6px 0}
+.dl-list li.muted{list-style:none;margin-left:-20px}
+.dl-in{width:calc(100% - 44px);font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px}
+.dl-rm{width:34px;height:34px;margin-left:6px;border:1px solid var(--line);background:var(--card);border-radius:8px;cursor:pointer;font-size:18px}
+.dl-add{display:flex;gap:8px;margin-top:10px}
+.dl-add input{flex:1;min-width:0;font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px}
+@media (max-width:480px){.hs-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -300,6 +323,16 @@ td.sec,th.sec{border-left:3px solid var(--green)!important}
 
 <!-- HOME -->
 <section class="panel" data-panel="home" id="p-home">
+  <div class="card hs-card" id="home-summary">
+    <div class="hs-head"><h2>Progress summary</h2><span class="muted">As of <b id="hs-asof"></b></span></div>
+    <div class="hs-grid" id="hs-grid"></div>
+  </div>
+  <div class="card dl-card" id="delays-card">
+    <h2>Critical delays</h2>
+    <ul class="dl-list" id="dl-list"></ul>
+    <form class="dl-add" id="dl-add" hidden><input type="text" id="dl-in" maxlength="200" placeholder="Add a delay" aria-label="New delay"><button type="submit" class="btn">Add</button></form>
+    <p class="muted" id="dl-msg" aria-live="polite"></p>
+  </div>
   <div class="card">
     <div class="banner" style="--img:url('hero.jpg')"></div>
     <h2>Project overview</h2>
@@ -368,32 +401,6 @@ td.sec,th.sec{border-left:3px solid var(--green)!important}
       <p class="muted" id="upload-msg" aria-live="polite"></p>
     </div>
     <div class="photos" id="photos"></div>
-  </div>
-  <div class="card entry" id="entry-box" hidden>
-    <h2>Enter progress</h2>
-    <div class="entry-bar"><input type="date" id="e-date" aria-label="Progress date"><span class="muted" id="e-status"></span></div>
-    <div class="seg" role="tablist" aria-label="What to enter">
-      <button type="button" class="seg-b" data-mode="rooms" aria-selected="true">Rooms</button>
-      <button type="button" class="seg-b" data-mode="elev" aria-selected="false">Elevations</button>
-    </div>
-    <div id="e-rooms-ctl">
-      <div class="e-floors" id="e-floors" role="tablist" aria-label="Floor"></div>
-      <select id="e-item" aria-label="Work item"></select>
-    </div>
-    <div id="e-elev-ctl" hidden>
-      <select id="e-elev-item" aria-label="Elevation item"></select>
-      <div class="e-floors" id="e-levels" role="tablist" aria-label="Level"></div>
-    </div>
-    <div class="e-pad" id="e-pad" hidden>
-      <div class="e-pad-head"><b id="e-pad-title"></b><button type="button" class="e-x" id="e-pad-close" aria-label="Close">×</button></div>
-      <div class="e-pad-row"><input type="text" id="e-pad-in" inputmode="numeric" autocomplete="off" aria-label="Percentage complete" placeholder="0 to 100"><span>%</span><button type="button" class="btn" id="e-pad-set">Set</button></div>
-      <p class="e-err" id="e-pad-err" aria-live="polite"></p>
-      <div class="e-grid" id="e-grid" aria-label="Quick pick"></div>
-      <p class="muted e-hint">Tap a value, or type one. Whole multiples of 5 only: 0, 5, 10 … 95, 100.</p>
-    </div>
-    <div class="e-rooms" id="e-rooms"></div>
-    <div class="entry-actions"><button class="btn" id="e-save" type="button">Save draft</button><button class="btn gold" id="e-pub" type="button">Publish to website</button></div>
-    <p class="muted" id="e-msg" aria-live="polite"></p>
   </div>
 </section>
 
@@ -945,227 +952,6 @@ const TZ = 'Asia/Karachi';
 const todayKey = () => new Date().toLocaleDateString('en-CA', { timeZone: TZ });
 const stamp = iso => iso ? new Date(iso).toLocaleString('en-GB', { timeZone: TZ, day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }) : '';
 const pctLabel = v => (v === null || v === undefined) ? '—' : Math.round(v * 100) + '%';
-function setupEntry(db) {
-  const box = document.getElementById('entry-box');
-  const dateIn = document.getElementById('e-date');
-  const statusEl = document.getElementById('e-status');
-  const msg = document.getElementById('e-msg');
-  const floorsEl = document.getElementById('e-floors');
-  const itemSel = document.getElementById('e-item');
-  const roomsEl = document.getElementById('e-rooms');
-  const elevSel = document.getElementById('e-elev-item');
-  const levelsEl = document.getElementById('e-levels');
-  const roomsCtl = document.getElementById('e-rooms-ctl');
-  const elevCtl = document.getElementById('e-elev-ctl');
-  const padEl = document.getElementById('e-pad');
-  const padIn = document.getElementById('e-pad-in');
-  const padErr = document.getElementById('e-pad-err');
-  const TRADE_HEADS = Object.values(TRADE_IDX);
-  const ROOM_ITEMS = DATA.heads.map((h, i) => ({ i, h })).filter(x => x.h !== 'Other (margin)' && !TRADE_HEADS.includes(x.i));
-  let mode = 'rooms';
-  let floor = FLOOR_ORDER[0];
-  let level = ELEV_ITEMS[0].levels[0].label;
-  let rows = {};              // room -> 20 workbook-style values
-  let mep = {};               // room -> 16 MEP detail values
-  let elevs = {};             // elevation key -> level -> side values
-  let meta = { status: 'new', updated: null, publishedAt: null };
-  let target = null;
-  const roomBase = () => { const o = {}; DATA.rooms.forEach(r => { o[r.room] = r.vals.slice(); }); return o; };
-  const elevBase = () => { const o = {}; ELEV_ITEMS.forEach(it => { o[it.key] = {}; it.levels.forEach(L => { o[it.key][L.label] = L.vals.map(numOrNull); }); }); return o; };
-  // rooms item select: room-level items, then the MEP detail grouped by trade
-  let opts = ROOM_ITEMS.map(x => '<option value="h:' + x.i + '">' + esc(x.h) + '</option>').join('');
-  const secs = [...new Set(MEP_ITEMS.map(m => m.section))];
-  opts += secs.map(s => '<optgroup label="MEP detail · ' + esc(s) + '">' + MEP_ITEMS.map((m, i) => ({ m, i })).filter(x => x.m.section === s).map(x => '<option value="m:' + x.i + '">' + esc(x.m.label) + '</option>').join('') + '</optgroup>').join('');
-  itemSel.innerHTML = opts;
-  elevSel.innerHTML = ELEV_ITEMS.map(it => '<option value="' + it.key + '">' + esc(it.label) + '</option>').join('');
-  floorsEl.innerHTML = FLOOR_ORDER.map(f => '<button type="button" class="chip" data-floor="' + esc(f) + '">' + esc(FL_SHORT[f] || f) + '</button>').join('');
-  dateIn.value = todayKey();
-
-  function paintMode() {
-    document.querySelectorAll('.seg-b').forEach(b => b.setAttribute('aria-selected', b.dataset.mode === mode ? 'true' : 'false'));
-    roomsCtl.hidden = mode !== 'rooms'; elevCtl.hidden = mode !== 'elev';
-  }
-  function paintFloors() { floorsEl.querySelectorAll('.chip').forEach(b => b.setAttribute('aria-selected', b.dataset.floor === floor ? 'true' : 'false')); }
-  function paintLevels() {
-    const it = elevItem(elevSel.value);
-    levelsEl.innerHTML = it.levels.map(L => { const off = courtOff(it.key, L.label); return '<button type="button" class="chip' + (off ? ' off' : '') + '" data-level="' + esc(L.label) + '" aria-selected="' + (L.label === level ? 'true' : 'false') + '"' + (off ? ' disabled' : '') + '>' + esc(L.label) + '</button>'; }).join('');
-  }
-  function paintStatus() {
-    statusEl.textContent = meta.status === 'published' ? 'Published ' + stamp(meta.publishedAt) : (meta.status === 'draft' ? 'Draft saved ' + stamp(meta.updated) : 'Not entered yet. Starts from the workbook figures.');
-  }
-  function cellHTML(label, v, attrs) {
-    const dis = (v === null || v === undefined) ? ' disabled' : '';
-    return '<div class="e-row"><div class="e-name"><b>' + esc(label[0]) + '</b><span>' + esc(label[1]) + '</span></div><button type="button" class="e-cell' + (v === 1 ? ' done' : (v === 0 ? ' zero' : '')) + '" ' + attrs + dis + '>' + pctLabel(v) + '</button></div>';
-  }
-  function roomVal(room, key) {
-    const r = DATA.rooms.find(x => x.room === room);
-    const [kind, idx] = key.split(':');
-    if (kind === 'h') return (rows[room] || r.vals)[+idx];
-    return (mep[room] || MEP_ROOM.rooms[room])[+idx];
-  }
-  function paintRooms() {
-    if (mode === 'rooms') {
-      const key = itemSel.value;
-      roomsEl.innerHTML = DATA.rooms.filter(r => r.floor === floor).map(r => cellHTML([r.room, r.type], roomVal(r.room, key), 'data-kind="room" data-room="' + esc(r.room) + '"')).join('');
-    } else {
-      const it = elevItem(elevSel.value);
-      roomsEl.innerHTML = it.sides.map((s, i) => cellHTML([s, level], elevValue({ elev: elevs }, it.key, level, i), 'data-kind="elev" data-elev="' + esc(it.key) + '" data-side="' + i + '"')).join('');
-    }
-  }
-  /* Taps made while a day is still loading are kept and replayed once it arrives, so a slow load never undoes them. */
-  let loading = false;
-  const loadEdits = [];
-  async function load() {
-    const key = dateIn.value;
-    msg.textContent = '';
-    loading = true; loadEdits.length = 0;
-    const blank = () => { rows = roomBase(); mep = MEP_BASE(); elevs = elevBase(); meta = { status: 'new', updated: null, publishedAt: null }; };
-    try {
-      const snap = await db.collection('progress').doc(key).get();
-      if (snap.exists) {
-        const d = snap.data() || {};
-        rows = d.rows || roomBase(); mep = d.mep || MEP_BASE(); elevs = d.elev || elevBase();
-        meta = { status: d.status || 'draft', updated: d.updated || null, publishedAt: d.publishedAt || null };
-      } else blank();
-    } catch (e) {
-      blank(); msg.textContent = 'Could not load this date. Showing the workbook figures.';
-    }
-    loading = false;
-    loadEdits.splice(0).forEach(e => writeVal(e.t, e.v));
-    paintStatus(); paintRooms();
-  }
-  async function save(publish) {
-    const key = dateIn.value;
-    if (!key) { msg.textContent = 'Choose a date first.'; return; }
-    // trade totals follow their MEP detail items
-    const rowsOut = JSON.parse(JSON.stringify(rows));
-    DATA.rooms.forEach(r => {
-      rowsOut[r.room] = rowsOut[r.room] || r.vals.slice();
-      const m = mep[r.room] || MEP_ROOM.rooms[r.room];
-      Object.keys(TRADE_IDX).forEach(sec => { const v = tradeTotal(m, sec); rowsOut[r.room][TRADE_IDX[sec]] = v; });
-    });
-    const now = new Date().toISOString();
-    const next = { date: key, rows: rowsOut, mep, elev: elevs, status: publish ? 'published' : 'draft', updated: now, publishedAt: publish ? now : (meta.publishedAt || null) };
-    try {
-      await db.collection('progress').doc(key).set(next);
-      meta = { status: next.status, updated: now, publishedAt: next.publishedAt };
-      if (publish) { PROGRESS_DAYS[key] = { note: '', updated: now, publishedAt: now, rows: rowsOut, elev: elevs }; renderCalendar(); renderDay(); setAsOf(); }
-      paintStatus();
-      msg.textContent = publish ? 'Published. The website will show it after the next update.' : 'Draft saved at ' + stamp(now) + '.';
-    } catch (e) {
-      msg.textContent = 'Could not save. Check your connection and try again.';
-    }
-  }
-  /* Percentages must be whole multiples of 5 between 0 and 100. */
-  function curOf(tg) {
-    if (tg.kind === 'room') return roomVal(tg.room, tg.key);
-    return elevValue({ elev: elevs }, tg.key, tg.level, tg.side);
-  }
-  /* The entry box opens directly under the tapped row, so the page does not jump to the top. */
-  const padHome = padEl.parentElement;
-  let openY = null;
-  function openPad(tg, title, row) {
-    target = tg;
-    const cur = curOf(tg);
-    document.getElementById('e-pad-title').textContent = title;
-    padIn.value = (cur === null || cur === undefined) ? '' : String(Math.round(cur * 100));
-    padErr.textContent = '';
-    openY = window.scrollY;
-    if (row) row.after(padEl);
-    padEl.hidden = false;
-    padEl.scrollIntoView({ block: 'center' });
-  }
-  function closePad() {
-    padEl.hidden = true;
-    padHome.insertBefore(padEl, document.getElementById('e-rooms'));
-    target = null;
-    if (openY !== null) { window.scrollTo({ top: openY, behavior: 'instant' }); openY = null; }
-  }
-  function parsePct(s) {
-    const x = String(s).trim();
-    if (x === '') return { err: 'Enter a percentage, such as 35.' };
-    if (!/^\d+$/.test(x)) return { err: 'Only whole numbers are allowed (no decimals or letters).' };
-    const n = +x;
-    if (n > 100) return { err: 'The maximum is 100%.' };
-    if (n % 5 !== 0) {
-      const lo = Math.floor(n / 5) * 5, hi = Math.min(100, Math.ceil(n / 5) * 5);
-      return { err: x + ' is not a multiple of 5. Try ' + lo + ' or ' + hi + '.' };
-    }
-    return { v: n / 100 };
-  }
-  /* Quick-pick buttons: tapping one saves at once, so no keyboard is needed. */
-  document.getElementById('e-grid').innerHTML = Array.from({ length: 21 }, (_, i) => '<button type="button" class="e-q" data-v="' + (i * 5) + '">' + (i * 5) + '%</button>').join('');
-  document.getElementById('e-grid').addEventListener('click', e => {
-    const b = e.target.closest('.e-q'); if (!b) return;
-    applyValue(+b.dataset.v / 100);
-  });
-  document.getElementById('e-pad-set').addEventListener('click', () => {
-    const res = parsePct(padIn.value);
-    if (res.err) { padErr.textContent = res.err; return; }
-    applyValue(res.v);
-  });
-  function writeVal(target, v) {
-    if (target.kind === 'room') {
-      const [kind, idx] = target.key.split(':');
-      if (kind === 'h') {
-        const r = DATA.rooms.find(x => x.room === target.room);
-        rows[target.room] = rows[target.room] || r.vals.slice();
-        rows[target.room][+idx] = v;
-      } else {
-        mep[target.room] = mep[target.room] || MEP_ROOM.rooms[target.room].slice();
-        mep[target.room][+idx] = v;
-      }
-    } else {
-      elevs[target.key] = elevs[target.key] || {};
-      const it = elevItem(target.key);
-      const L = it.levels.find(x => x.label === target.level);
-      elevs[target.key][target.level] = elevs[target.key][target.level] || L.vals.map(numOrNull);
-      elevs[target.key][target.level][target.side] = v;
-    }
-  }
-  function applyValue(v) {
-    if (!target) return;
-    writeVal(target, v);
-    if (loading) loadEdits.push({ t: Object.assign({}, target), v });
-    meta.status = meta.status === 'published' ? 'draft' : meta.status;
-    const label = target.kind === 'room' ? target.room : target.level;
-    closePad();
-    paintRooms(); paintStatus();
-    msg.textContent = label + ' set to ' + Math.round(v * 100) + '%. Not saved yet. Tap Save draft.';
-  }
-  padIn.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('e-pad-set').click(); });
-  document.getElementById('e-pad-close').addEventListener('click', closePad);
-  roomsEl.addEventListener('click', e => {
-    const b = e.target.closest('.e-cell'); if (!b || b.disabled) return;
-    if (b.dataset.kind === 'room') {
-      const room = b.dataset.room, key = itemSel.value;
-      const label = itemSel.options[itemSel.selectedIndex].textContent;
-      openPad({ kind: 'room', room, key }, room + ' · ' + label, b.closest('.e-row'));
-    } else {
-      const key = b.dataset.elev, side = +b.dataset.side, it = elevItem(key);
-      openPad({ kind: 'elev', key, level, side }, level + ' · ' + it.label + ' · ' + it.sides[side], b.closest('.e-row'));
-    }
-  });
-  document.querySelector('.seg').addEventListener('click', e => {
-    const b = e.target.closest('.seg-b'); if (!b) return;
-    mode = b.dataset.mode; closePad(); paintMode(); paintRooms();
-  });
-  floorsEl.addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; floor = b.dataset.floor; paintFloors(); paintRooms(); });
-  levelsEl.addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; level = b.dataset.level; paintLevels(); paintRooms(); });
-  itemSel.addEventListener('change', paintRooms);
-  elevSel.addEventListener('change', () => { const it = elevItem(elevSel.value); level = it.levels.find(L => !courtOff(it.key, L.label)).label; paintLevels(); paintRooms(); });
-  dateIn.addEventListener('change', load);
-  document.getElementById('e-save').addEventListener('click', () => save(false));
-  document.getElementById('e-pub').addEventListener('click', () => save(true));
-  box.hidden = false;
-  paintMode(); paintFloors(); paintLevels(); load();
-  /* Published days from the database join the calendar on this page. */
-  db.collection('progress').get().then(s => {
-    s.docs.forEach(d => { const r = d.data() || {}; if (r.status === 'published' && r.rows) PROGRESS_DAYS[d.id] = { note: '', updated: r.updated, publishedAt: r.publishedAt, rows: r.rows, elev: r.elev || null }; });
-    renderCalendar(); renderDay(); setAsOf();
-  }).catch(() => {});
-}
-
 /* Uploads appear only for contributors on the Artifact page; the static site has no backend, so the panel stays read-only there. */
 function shrinkPhoto(file) {
   return createImageBitmap(file).then(bmp => {
@@ -1189,6 +975,14 @@ async function setupUploads() {
   const caption = document.getElementById('upload-caption');
   box.hidden = false;
   CAN_EDIT = true;
+  DELAY_DB = db;
+  db.collection('delays').onSnapshot(snap => {
+    const d = snap.docs.find(x => x.id === 'current');
+    const items = d && d.data() && d.data().items;
+    if (Array.isArray(items)) DELAYS = items;
+    renderDelays();
+  }, () => {});
+  renderDelays();
   document.getElementById('photos').addEventListener('click', async e => {
     const btn = e.target.closest('.rm');
     if (!btn) return;
@@ -1213,7 +1007,6 @@ async function setupUploads() {
     renderToday();
   });
   DB_API = db;
-  setupEntry(db);
   db.collection('daily').onSnapshot(snap => {
     LIVE_ROWS = mapPhotoRows(snap.docs);
     renderToday();
@@ -1322,6 +1115,71 @@ function parseHash() {
   const [tab, sub] = (location.hash.slice(1) || 'home').split('/');
   show(tab, sub || (SUBS[tab] ? SUBS[tab][0] : null), false);
 }
+
+/* ---------- Home: progress summary and critical delays ---------- */
+const DELAYS_STATIC = []
+;
+let DELAYS = DELAYS_STATIC.slice();
+let DELAY_DB = null;
+const HS_TILES = [
+  { title: 'Grey works', sub: 'grey', heads: [0, 1, 2, 3, 4] },
+  { title: 'MEP', sub: 'fire', heads: [6, 7, 8, 9] },
+  { title: 'Finishing', sub: 'finishing', heads: [10, 11, 12, 13, 14] },
+  { title: 'Woodworks', sub: 'wood', heads: [16, 17, 18] }
+];
+const HS_SUB_OF = { 0:'grey',1:'grey',2:'grey',3:'grey',4:'grey',6:'fire',7:'plmb',8:'mech',9:'elec',10:'finishing',11:'finishing',12:'finishing',13:'finishing',14:'finishing',16:'wood',17:'wood',18:'wood' };
+function renderSummary() {
+  const key = dayKeys.length ? dayKeys[dayKeys.length - 1] : null;
+  const rec = key ? PROGRESS_DAYS[key] : null;
+  document.getElementById('hs-asof').textContent = key ? fmtDate(key) : 'no record yet';
+  const valsOf = r => (rec && rec.rows && rec.rows[r.room]) || r.vals;
+  const headAvg = i => { const v = DATA.rooms.map(r => valsOf(r)[i]).filter(x => x !== null && x !== undefined); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
+  document.getElementById('hs-grid').innerHTML = HS_TILES.map(t => {
+    const avgs = t.heads.map(headAvg).filter(x => x !== null);
+    const overall = avgs.length ? avgs.reduce((a, b) => a + b, 0) / avgs.length : null;
+    const items = t.heads.map(i => '<li><a href="#progress/' + HS_SUB_OF[i] + '"><span>' + esc(DATA.heads[i]) + '</span><b class="' + cls(headAvg(i)) + '">' + pctLabel(headAvg(i)) + '</b></a></li>').join('');
+    return '<section class="hs-tile"><a class="hs-title" href="#progress/' + t.sub + '"><span>' + esc(t.title) + '</span><b>' + pctLabel(overall) + '</b></a>' +
+      '<div class="hs-bar"><i style="width:' + Math.round((overall || 0) * 100) + '%"></i></div><ul class="hs-list">' + items + '</ul></section>';
+  }).join('');
+}
+function renderDelays() {
+  const ul = document.getElementById('dl-list');
+  ul.innerHTML = DELAYS.length
+    ? DELAYS.map((t, i) => CAN_EDIT
+        ? '<li><input type="text" class="dl-in" data-i="' + i + '" maxlength="200" value="' + esc(t) + '" aria-label="Delay ' + (i + 1) + '"><button type="button" class="dl-rm" data-i="' + i + '" aria-label="Remove delay ' + (i + 1) + '">×</button></li>'
+        : '<li>' + esc(t) + '</li>').join('')
+    : '<li class="muted">No critical delays recorded.</li>';
+  document.getElementById('dl-add').hidden = !CAN_EDIT;
+}
+function saveDelays(msgText) {
+  const msg = document.getElementById('dl-msg');
+  if (!DELAY_DB) return;
+  msg.textContent = 'Saving…';
+  DELAY_DB.collection('delays').doc('current').set({ items: DELAYS.filter(x => x && x.trim()), updated: new Date().toISOString() })
+    .then(() => { msg.textContent = msgText || 'Saved.'; })
+    .catch(() => { msg.textContent = 'Could not save. Only editors can change the delays.'; });
+}
+document.getElementById('dl-list').addEventListener('change', e => {
+  const inp = e.target.closest('.dl-in'); if (!inp) return;
+  DELAYS[+inp.dataset.i] = inp.value.trim();
+  saveDelays('Delay updated.');
+});
+document.getElementById('dl-list').addEventListener('click', e => {
+  const b = e.target.closest('.dl-rm'); if (!b) return;
+  DELAYS.splice(+b.dataset.i, 1);
+  renderDelays();
+  saveDelays('Delay removed.');
+});
+document.getElementById('dl-add').addEventListener('submit', e => {
+  e.preventDefault();
+  const inp = document.getElementById('dl-in');
+  const t = inp.value.trim(); if (!t) return;
+  DELAYS.push(t); inp.value = '';
+  renderDelays();
+  saveDelays('Delay added.');
+});
+renderSummary();
+renderDelays();
 document.getElementById('sub-gutka').innerHTML = gutkaView();
 document.getElementById('sub-plaster').innerHTML = plasterView();
 document.getElementById('bgA').style.backgroundImage = "url('hero.jpg')";
