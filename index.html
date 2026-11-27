@@ -99,9 +99,10 @@ ul.clean li{margin:6px 0}
 .tabset.c-mep{--cc:var(--green-2);--tint:#E3F0E8}
 .tabset.c-fin{--cc:#B5771F;--tint:#FBF0DA}
 .tabset.c-glance{--cc:var(--green);--tint:#E6F1EB}
-.tabbar{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid #CFDDD5}
+.tabset.c-elev{--cc:#8A5A3B;--tint:#F5EBE3}
+.tabbar{display:flex;flex-wrap:wrap;gap:0 2px;border-bottom:1px solid #CFDDD5}
 .tabbar::-webkit-scrollbar{display:none}
-.tab{flex:0 0 auto;position:relative;font:inherit;font-size:15px;font-weight:700;color:var(--ink);background:transparent;border:0;padding:12px 12px 12px;min-height:46px;cursor:pointer;opacity:.5;transition:opacity .2s ease,color .2s ease;white-space:nowrap}
+.tab{flex:0 0 auto;position:relative;font:inherit;font-size:15px;font-weight:700;color:var(--ink);background:transparent;border:0;padding:10px 10px 11px;min-height:44px;cursor:pointer;opacity:.5;transition:opacity .2s ease,color .2s ease;white-space:nowrap}
 .tab:hover{opacity:.8}
 .tab[aria-current="true"]{opacity:1;color:var(--cc)}
 .tab[aria-current="true"]:after{content:"";position:absolute;left:8px;right:8px;bottom:-1px;height:4px;border-radius:4px 4px 0 0;background:var(--cc)}
@@ -163,7 +164,7 @@ td.rangecell{text-align:left;white-space:normal;min-width:220px}
 .cluster:last-child{border-bottom:0}
 .ch{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:8px 14px 2px;display:flex;align-items:center;gap:8px}
 .ch:before{content:"";width:10px;height:10px;border-radius:50%;background:var(--cc,var(--green-2))}
-.c-glance{--cc:var(--green)} .c-grey{--cc:#6B7078} .c-mep{--cc:var(--green-2)} .c-fin{--cc:var(--gold)}
+.c-glance{--cc:var(--green)} .c-grey{--cc:#6B7078} .c-mep{--cc:var(--green-2)} .c-fin{--cc:var(--gold)} .c-elev{--cc:#8A5A3B}
 .cluster .item{min-height:48px;padding-left:24px}
 .cluster.c-grey .item:hover,.cluster.c-grey .item[aria-current="true"]{background:#E7E9EC}
 .glance{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
@@ -425,8 +426,9 @@ td.sec,th.sec{border-left:3px solid var(--green)!important}
     <button class="item" data-tab="progress" data-sub="plmb">Plumbing</button>
     <button class="item" data-tab="progress" data-sub="mech">Mechanical</button>
     <button class="item" data-tab="progress" data-sub="elec">Electrical</button></div>
+  <div class="cluster c-elev"><div class="ch">Elevation</div>
+    <button class="item" data-tab="progress" data-sub="gutka">Gutka &amp; marble<small>Facade, 4 elevations</small></button></div>
   <div class="cluster c-fin"><div class="ch">Finishing</div>
-    <button class="item" data-tab="progress" data-sub="gutka">Gutka &amp; marble</button>
     <button class="item" data-tab="progress" data-sub="finishing">Finishing works</button>
     <button class="item" data-tab="progress" data-sub="wood">Woodworks</button></div>
   <div class="cluster c-glance"><div class="ch">Detail</div>
@@ -665,7 +667,8 @@ const CLUSTERS = [
   { id:'summary', label:'At a glance', subs:['summary'], cls:'c-glance' },
   { id:'grey', label:'Grey works', subs:['grey'], cls:'c-grey' },
   { id:'mep', label:'MEP works', subs:['fire','plmb','mech','elec'], cls:'c-mep' },
-  { id:'finish', label:'Finishing', subs:['gutka','finishing','wood'], cls:'c-fin' },
+  { id:'elev', label:'Elevation', subs:['gutka'], cls:'c-elev' },
+  { id:'finish', label:'Finishing', subs:['finishing','wood'], cls:'c-fin' },
   { id:'floors', label:'By floor', subs:['floors'], cls:'c-glance' } ];
 const SUB_LABEL = { summary:'At a glance', grey:'Grey works', fire:'Fire safety', plmb:'Plumbing', mech:'Mechanical', elec:'Electrical', gutka:'Gutka & marble', finishing:'Finishing works', wood:'Woodworks', floors:'By floor', room:'Room by room', types:'Room types' };
 const SHEET = { progress:'sheet-progress', rooms:'sheet-rooms', more:'sheet-more', qa:'sheet-qa' };
