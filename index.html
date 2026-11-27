@@ -182,6 +182,9 @@ td.rangecell{text-align:left;white-space:normal;min-width:220px}
 #e-pad-in{flex:1 1 auto;min-width:0;font:inherit;font-size:18px;padding:10px 12px;border:1px solid #C9DCD1;border-radius:12px;background:#fff;color:inherit}
 .e-err{color:#8A2B1E;font-weight:600;margin:6px 0 0;font-size:13px;min-height:1em}
 .e-hint{margin:4px 0 0;font-size:12px}
+.e-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-top:10px}
+.e-q{font:inherit;font-size:13px;font-weight:600;padding:9px 0;border:1px solid #C9DCD1;border-radius:10px;background:#fff;color:#0E4A36;cursor:pointer}
+.e-q:active{background:#0E4A36;color:#fff}
 .e-cell.zero{background:#F4C7C3}
 .e-cell.done{background:#C6E6C0}
 .e-cell:disabled{background:#F3F5F4;color:#9AA7A0;cursor:default}
@@ -385,7 +388,8 @@ td.sec,th.sec{border-left:3px solid var(--green)!important}
       <div class="e-pad-head"><b id="e-pad-title"></b><button type="button" class="e-x" id="e-pad-close" aria-label="Close">×</button></div>
       <div class="e-pad-row"><input type="text" id="e-pad-in" inputmode="numeric" autocomplete="off" aria-label="Percentage complete" placeholder="0 to 100"><span>%</span><button type="button" class="btn" id="e-pad-set">Set</button></div>
       <p class="e-err" id="e-pad-err" aria-live="polite"></p>
-      <p class="muted e-hint">Whole multiples of 5 only: 0, 5, 10 … 95, 100.</p>
+      <div class="e-grid" id="e-grid" aria-label="Quick pick"></div>
+      <p class="muted e-hint">Tap a value, or type one. Whole multiples of 5 only: 0, 5, 10 … 95, 100.</p>
     </div>
     <div class="e-rooms" id="e-rooms"></div>
     <div class="entry-actions"><button class="btn" id="e-save" type="button">Save draft</button><button class="btn gold" id="e-pub" type="button">Publish to website</button></div>
@@ -1082,32 +1086,42 @@ function setupEntry(db) {
     }
     return { v: n / 100 };
   }
+  /* Quick-pick buttons: tapping one saves at once, so no keyboard is needed. */
+  document.getElementById('e-grid').innerHTML = Array.from({ length: 21 }, (_, i) => '<button type="button" class="e-q" data-v="' + (i * 5) + '">' + (i * 5) + '%</button>').join('');
+  document.getElementById('e-grid').addEventListener('click', e => {
+    const b = e.target.closest('.e-q'); if (!b) return;
+    applyValue(+b.dataset.v / 100);
+  });
   document.getElementById('e-pad-set').addEventListener('click', () => {
     const res = parsePct(padIn.value);
     if (res.err) { padErr.textContent = res.err; return; }
+    applyValue(res.v);
+  });
+  function applyValue(v) {
+    if (!target) return;
     if (target.kind === 'room') {
       const [kind, idx] = target.key.split(':');
       if (kind === 'h') {
         const r = DATA.rooms.find(x => x.room === target.room);
         rows[target.room] = rows[target.room] || r.vals.slice();
-        rows[target.room][+idx] = res.v;
+        rows[target.room][+idx] = v;
       } else {
         mep[target.room] = mep[target.room] || MEP_ROOM.rooms[target.room].slice();
-        mep[target.room][+idx] = res.v;
+        mep[target.room][+idx] = v;
       }
     } else {
       elevs[target.key] = elevs[target.key] || {};
       const it = elevItem(target.key);
       const L = it.levels.find(x => x.label === target.level);
       elevs[target.key][target.level] = elevs[target.key][target.level] || L.vals.map(numOrNull);
-      elevs[target.key][target.level][target.side] = res.v;
+      elevs[target.key][target.level][target.side] = v;
     }
     meta.status = meta.status === 'published' ? 'draft' : meta.status;
     const label = target.kind === 'room' ? target.room : target.level;
     closePad();
     paintRooms(); paintStatus();
-    msg.textContent = label + ' set to ' + Math.round(res.v * 100) + '%. Not saved yet. Tap Save draft.';
-  });
+    msg.textContent = label + ' set to ' + Math.round(v * 100) + '%. Not saved yet. Tap Save draft.';
+  }
   padIn.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('e-pad-set').click(); });
   document.getElementById('e-pad-close').addEventListener('click', closePad);
   roomsEl.addEventListener('click', e => {
