@@ -749,14 +749,15 @@ function renderRooms() {
     n++;
     if (r.floor !== lastFloor) { lastFloor = r.floor; lastElev = null; html += '<tr class="floorhead"><td class="name" colspan="' + span + '">' + esc(r.floor) + '</td></tr>'; }
     if (r.elev !== lastElev) { lastElev = r.elev; html += '<tr class="elev"><td class="name" colspan="' + span + '">' + esc(r.elev) + '</td></tr>'; }
-    html += '<tr><td class="name">' + r.room + '<div class="muted" style="font-weight:500;font-size:13px">' + esc(r.type) + '</div></td>' + r.vals.map((v, i) => '<td class="' + cls(v) + secCls(i) + '">' + pct(v) + '</td>').join('') + '</tr>';
+    const rec = calSel && PROGRESS_DAYS[calSel];
+    const vals = (rec && rec.rows && rec.rows[r.room]) || r.vals;
+    html += '<tr><td class="name">' + r.room + '<div class="muted" style="font-weight:500;font-size:13px">' + esc(r.type) + '</div></td>' + vals.map((v, i) => '<td class="' + cls(v) + secCls(i) + '">' + pct(v) + '</td>').join('') + '</tr>';
   });
   roomBody.innerHTML = html || '<tr><td class="name" colspan="' + span + '">No matching room.</td></tr>';
   document.getElementById('count').textContent = n + ' of 200';
 }
 floorSel.addEventListener('change', renderRooms);
 document.getElementById('fSearch').addEventListener('input', renderRooms);
-renderRooms();
 
 /* ---------- Room types ---------- */
 const byFloor = {}; FLOOR_ORDER.forEach(f => byFloor[f] = []);
@@ -844,6 +845,7 @@ function renderCalendar() {
   document.getElementById('cal-grid').innerHTML = html;
 }
 function renderDay() {
+  renderRooms();
   const box = document.getElementById('day-view');
   const rec = calSel && PROGRESS_DAYS[calSel];
   if (!rec) { box.innerHTML = '<p class="muted">Choose a highlighted date to see its progress.</p>'; return; }
