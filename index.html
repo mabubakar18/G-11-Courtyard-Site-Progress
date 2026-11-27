@@ -704,7 +704,7 @@ function plasterView() {
     return '<div class="scroll" style="margin-top:14px"><table><thead><tr class="trade"><th class="name" rowspan="2">' + title + '</th><th colspan="4">Plaster, sides</th><th rowspan="2">Level avg</th></tr><tr class="items">' + heads.map(h => '<th>' + h + '</th>').join('') + '</tr></thead><tbody>' + body + '</tbody></table></div>';
   };
   return block('Level', ELEV.plaster, ['Front (NW)','Right (SW)','Rear (SE)','Left (NE)']) +
-    block('Courtyard level', ELEV.plaster_court, ['Side 1','Side 2','Side 3','Side 4']);
+    block('Courtyard level', ELEV.plaster_court, ['Front (NW)','Right (SW)','Rear (SE)','Left (NE)']);
 }
 function gmv(v) { return v === 'NA' ? '<td class="na">NA</td>' : '<td class="' + cls(v) + '">' + pct(v) + '</td>'; }
 function gutkaView() {
@@ -720,7 +720,7 @@ function gutkaView() {
   const total = '<tr class="total"><td class="name">OVERALL</td>' + o.gutka.map(v => gmv(v)).join('') + o.marble.map((v, i) => (i === 0 ? '<td class="' + cls(v) + ' sec">' : '<td class="' + cls(v) + '">') + pct(v) + '</td>').join('') + '<td class="' + cls(o.avg) + '"><b>' + pct(o.avg) + '</b></td></tr>';
   const t1 = '<div class="scroll"><table><thead>' + head1 + head2 + '</thead><tbody>' + rows + total + '</tbody></table></div>';
   const crow = GM.courtyard.map(l => '<tr><td class="name">' + l.label + '</td>' + l.vals.map(v => gmv(v)).join('') + '<td class="' + cls(l.avg) + '"><b>' + pct(l.avg) + '</b></td></tr>').join('');
-  const t2 = '<div class="scroll" style="margin-top:14px"><table><thead><tr class="trade"><th class="name" rowspan="2">Level</th><th colspan="4">Gutka, courtyard sides</th><th rowspan="2">Level avg</th></tr><tr class="items"><th>Side 1</th><th>Side 2</th><th>Side 3</th><th>Side 4</th></tr></thead><tbody>' + crow + '</tbody></table></div>';
+  const t2 = '<div class="scroll" style="margin-top:14px"><table><thead><tr class="trade"><th class="name" rowspan="2">Level</th><th colspan="4">Gutka, courtyard sides</th><th rowspan="2">Level avg</th></tr><tr class="items"><th>Front (NW)</th><th>Right (SW)</th><th>Rear (SE)</th><th>Left (NE)</th></tr></thead><tbody>' + crow + '</tbody></table></div>';
   return tiles + '<div style="margin-top:14px">' + t1 + '</div>' + '<h3 style="margin-top:18px">Courtyard</h3>' + t2;
 }
 
@@ -775,7 +775,7 @@ const KEY = ['Block work','Plaster','Floor screed','Fire safety','Plumbing','Mec
 const WEEKLY = [{ date: '2026-11-26', note: 'Baseline', vals: ALL.vals }];
 const numOrNull = v => (typeof v === 'number' ? v : null);
 const SIDES4 = ['Front (NW)', 'Right (SW)', 'Rear (SE)', 'Left (NE)'];
-const SIDESC = ['Side 1', 'Side 2', 'Side 3', 'Side 4'];
+const SIDESC = SIDES4;
 /* Elevation items: each has levels, and every level has four sides. */
 const ELEV_ITEMS = [
   { key: 'gutka', label: 'Gutka (elevations)', sides: SIDES4, levels: GM.levels.map(l => ({ label: l.label, vals: l.gutka })) },
