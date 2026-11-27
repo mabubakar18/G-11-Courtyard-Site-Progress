@@ -13,211 +13,187 @@
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
 <style>
-/* Layout: navy band with the project name and the as-of date, a sticky tab row, and one panel per tab.
-   Palette: navy for structure; progress colours follow the tracker convention (0% red, in progress yellow, 100% green). */
 :root {
-  --bg: #F3F6F4; --panel: #FFFFFF; --ink: #1B2430; --muted: #5D6878; --line: #D5DAE2;
-  --navy: #0E4A36; --navy-2: #1F6B52; --soft: #E5EFEA;
-  --red: #F4C7C3; --yellow: #FFF2A8; --green: #C6E6C0; --warn: #8A4B00; --warn-bg: #FFF4E0;
+  --bg: #E9F2ED; --panel: #FFFFFF; --ink: #14261E; --muted: #4F6B5D; --line: #CFE0D6;
+  --navy: #0E4A36; --navy-2: #1F6B52; --soft: #DCEBE3; --mint: #F1F8F4;
+  --gold: #C98B2B; --gold-2: #F2D08A;
+  --red: #F4C7C3; --yellow: #FFF2A8; --green: #C6E6C0;
+  --warn: #8A4B00; --warn-bg: #FFF4E0;
   --display: "Space Grotesk", "Inter", system-ui, sans-serif;
   --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   color-scheme: light;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.55;
+body { margin: 0; color: var(--ink); font-family: var(--body); font-size: 15.5px; line-height: 1.55;
+  background: linear-gradient(180deg, #E9F2ED 0%, #F6F1E7 100%) fixed;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-.wrap { max-width: 1240px; margin: 0 auto; padding-block: 18px 48px; }
-h1, h2, h3 { font-family: var(--display); color: var(--navy); line-height: 1.2; text-wrap: balance; }
-h2 { font-size: 22px; margin: 0 0 6px; }
-h3 { font-size: 16px; margin: 0 0 6px; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-block: 16px 48px; }
+h1, h2, h3 { font-family: var(--display); color: var(--navy); line-height: 1.2; margin: 0; text-wrap: balance; }
+h2 { font-size: 24px; padding-left: 14px; position: relative; margin-bottom: 12px; }
+h2::before { content: ""; position: absolute; left: 0; top: 4px; bottom: 4px; width: 5px; border-radius: 3px; background: var(--gold); }
+h3 { font-size: 16px; margin-bottom: 6px; }
 p { margin: 0 0 10px; max-width: 72ch; }
 .muted { color: var(--muted); }
 .small { font-size: 13px; }
 
-header.band { position: relative; overflow: hidden; color: var(--ink); border-radius: 12px; padding: 26px 26px; min-height: 170px; display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: center; justify-content: space-between;
-  background: linear-gradient(90deg, rgba(255,255,255,.94) 0%, rgba(255,255,255,.86) 45%, rgba(255,255,255,.62) 100%), url("hero.jpg") center 35% / cover no-repeat, var(--soft); }
+/* header */
+header.band { position: relative; overflow: hidden; color: #fff; border-radius: 18px; padding: 30px; min-height: 190px; display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: center; justify-content: space-between;
+  background: linear-gradient(115deg, rgba(14,74,54,.96) 0%, rgba(14,74,54,.86) 48%, rgba(14,74,54,.55) 100%), url("hero.jpg") center 30% / cover no-repeat; box-shadow: 0 18px 40px -18px rgba(14,74,54,.6); }
 header.band > * { position: relative; }
-header.band h1 { color: var(--navy); font-size: 26px; margin: 0; }
-header.band .sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
-.logo { height: 48px; width: auto; max-width: 220px; display: block; margin-bottom: 10px; }
-.brandrow { display: flex; flex-direction: column; align-items: flex-start; }
-.asof { background: #fff; color: var(--navy); border-radius: 8px; padding: 8px 14px; text-align: right; }
-.asof .k { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
-.asof .v { font-family: var(--display); font-weight: 700; font-size: 17px; }
+.logo { height: 44px; width: auto; max-width: 200px; display: block; margin-bottom: 14px; filter: brightness(0) invert(1); }
+header.band h1 { color: #fff; font-size: 30px; letter-spacing: -.2px; }
+header.band .sub { color: #D7EBDF; font-size: 15px; margin-top: 4px; }
+.asof { background: var(--gold); color: #1B1406; border-radius: 14px; padding: 12px 18px; text-align: right; box-shadow: 0 8px 20px -10px rgba(0,0,0,.4); }
+.asof .k { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #3A2A08; }
+.asof .v { font-family: var(--display); font-weight: 700; font-size: 20px; }
 
-nav.tabs { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--bg); display: flex; gap: 6px; padding: 12px 0; flex-wrap: wrap; }
-nav.tabs button { font: inherit; font-weight: 600; font-size: 14px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); padding: 9px 16px; border-radius: 8px; cursor: pointer; }
-nav.tabs button:hover { border-color: var(--navy-2); }
-nav.tabs button[aria-selected="true"] { background: var(--navy); color: #fff; border-color: var(--navy); }
-nav.tabs button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid var(--navy-2); outline-offset: 2px; }
+/* navigation: one row of tabs, with drop-downs for Progress and Rooms */
+nav.menu { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); padding: 12px 0; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+nav.menu::-webkit-scrollbar { display: none; }
+nav.menu > * { flex: 0 0 auto; }
+nav.menu button, .dd-btn { font: inherit; font-weight: 600; font-size: 14px; color: var(--navy); background: #fff; border: none; border-radius: 999px; padding: 10px 16px; cursor: pointer; box-shadow: 0 4px 12px -8px rgba(14,74,54,.5); white-space: nowrap; transition: background .2s ease, color .2s ease; }
+nav.menu button:hover, .dd-btn:hover { background: var(--gold-2); }
+nav.menu button[aria-current="page"], .dd-btn[aria-current="true"] { background: var(--navy); color: #fff; }
+button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid var(--navy-2); outline-offset: 2px; }
+.dd { position: relative; }
+.dd-menu { position: absolute; top: calc(100% + 8px); left: 0; min-width: 230px; background: #fff; border-radius: 14px; padding: 8px; box-shadow: 0 18px 36px -14px rgba(14,74,54,.45); display: none; z-index: 40; }
+.dd.open .dd-menu { display: block; animation: drop .18s ease; }
+.dd-menu button { display: block; width: 100%; text-align: left; border-radius: 9px; box-shadow: none; background: transparent; padding: 10px 12px; }
+.dd-menu button[aria-current="true"] { background: var(--soft); color: var(--navy); }
+@keyframes drop { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 
-.panel[hidden] { display: none !important; }
-.card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
-.grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
-.grid2 > *, .grid3 > * { min-width: 0; }
-.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-.stack > * + * { margin-top: 14px; }
+/* sub-tabs inside a section */
+.subnav { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 14px; }
+.subnav button { font: inherit; font-size: 13.5px; font-weight: 600; color: var(--navy); background: var(--soft); border: none; border-radius: 999px; padding: 7px 14px; cursor: pointer; transition: background .2s ease; }
+.subnav button[aria-current="true"] { background: var(--gold); color: #1B1406; }
+
+/* panels: transition in on change */
+.panel { animation: rise .32s ease both; }
+.panel[hidden], .sub[hidden] { display: none !important; }
+.sub { animation: rise .25s ease both; }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.card { background: var(--panel); border-radius: 18px; padding: 22px; box-shadow: 0 10px 28px -16px rgba(14,74,54,.35); }
+.card + .card, .stack > * + * { margin-top: 14px; }
+.grid2 { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 14px; }
+.grid2 > * { min-width: 0; }
 .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 16px 0; }
-.fact { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
-.fact .k { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
-.fact .v { font-family: var(--display); font-size: 24px; font-weight: 700; color: var(--navy); margin-top: 2px; line-height: 1.15; }
-.fact .s { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+.fact { border-radius: 16px; padding: 16px 18px; background: var(--navy); color: #fff; box-shadow: 0 10px 22px -12px rgba(14,74,54,.7); }
+.fact:nth-child(2n) { background: var(--gold); color: #1B1406; }
+.fact:nth-child(3n) { background: var(--navy-2); }
+.fact .k { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; opacity: .85; }
+.fact .v { font-family: var(--display); font-size: 30px; font-weight: 700; line-height: 1.15; margin-top: 2px; }
+.fact .s { font-size: 12.5px; opacity: .85; }
 dl.kv { display: grid; grid-template-columns: max-content 1fr; gap: 8px 18px; margin: 0; }
 dl.kv dt { color: var(--muted); font-size: 13.5px; }
 dl.kv dd { margin: 0; }
 ul.clean { margin: 0; padding-left: 18px; }
-ul.clean li { margin: 4px 0; }
-.pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 999px; background: var(--soft); color: var(--navy); margin: 2px 4px 2px 0; }
-.hero-line { font-size: 17px; max-width: 76ch; }
-.anchor-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-.anchor-row a { font-size: 13.5px; font-weight: 600; color: var(--navy); text-decoration: none; border: 1px solid var(--line); background: #fff; padding: 7px 12px; border-radius: 999px; }
-.anchor-row a:hover { border-color: var(--navy-2); }
+ul.clean li { margin: 5px 0; }
+.hero-line { font-size: 18px; color: var(--ink); }
 
+/* tables */
 .legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 12.5px; color: var(--muted); margin: 0 0 12px; }
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
-.legend i { width: 14px; height: 14px; border-radius: 3px; border: 1px solid #b9c0cb; display: inline-block; }
-.scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; max-width: 100%; }
-table { border-collapse: separate; border-spacing: 0; width: 100%; font-variant-numeric: tabular-nums; background: var(--panel); }
-th, td { border-bottom: 1px solid var(--line); border-right: 1px solid #E6EAF0; padding: 7px 8px; text-align: center; white-space: nowrap; }
+.legend i { width: 14px; height: 14px; border-radius: 4px; display: inline-block; border: 1px solid #b9c0cb; }
+.scroll { overflow: auto; border-radius: 14px; max-width: 100%; box-shadow: inset 0 0 0 1px var(--line); -webkit-overflow-scrolling: touch; }
+table { border-collapse: separate; border-spacing: 0; width: 100%; background: #fff; font-variant-numeric: tabular-nums; }
+th, td { border-bottom: 1px solid #E3EDE7; border-right: 1px solid #EEF4F0; padding: 7px 9px; text-align: center; white-space: nowrap; }
 thead th { background: var(--soft); color: var(--navy); font-size: 12px; font-weight: 600; position: sticky; top: 0; z-index: 2; }
-thead tr.grp th { background: var(--navy); color: #fff; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
-th.name, td.name { text-align: left; position: sticky; left: 0; background: #fff; z-index: 1; font-weight: 600; }
+thead tr.grp th { background: var(--navy); color: #fff; text-transform: uppercase; letter-spacing: .04em; }
+th.name, td.name { text-align: left; font-weight: 600; background: #fff; }
+td.name { position: sticky; left: 0; z-index: 1; min-width: 96px; max-width: 150px; white-space: normal; }
 thead th.name { z-index: 3; background: var(--soft); }
 td.v0 { background: var(--red); } td.vm { background: var(--yellow); } td.v1 { background: var(--green); }
-td.na { background: #fff; color: #9aa3b0; }
+td.na { color: #9aa3b0; }
 tr.total td { font-weight: 700; border-top: 2px solid var(--navy); }
-tr.floorhead td { background: var(--soft); font-weight: 700; color: var(--navy); text-align: left; }
-tr.elev td { background: #F7F9FC; color: var(--muted); font-style: italic; text-align: left; }
+tr.floorhead td { background: var(--gold-2); color: #3A2A08; font-weight: 700; text-align: left; }
+tr.elev td { background: var(--mint); color: var(--muted); font-style: italic; text-align: left; }
 td.wide { text-align: left; }
-td.rangecell { text-align: left; white-space: normal; min-width: 260px; }
-
+td.rangecell { text-align: left; white-space: normal; min-width: 220px; }
+.bigscroll { max-height: 72vh; }
 .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; margin-bottom: 12px; }
 .controls label { display: grid; gap: 4px; font-size: 12px; color: var(--muted); font-weight: 600; }
-.controls select, .controls input { font: inherit; padding: 8px 10px; border: 1px solid #b9c0cb; border-radius: 7px; background: #fff; color: var(--ink); min-width: 150px; }
+.controls select, .controls input { font: inherit; padding: 9px 11px; border: 1px solid #b9c0cb; border-radius: 9px; background: #fff; color: var(--ink); min-width: 140px; }
 .count { color: var(--muted); font-size: 13px; padding-bottom: 9px; }
 
-.open { border-left: 4px solid #C77700; background: var(--warn-bg); border-radius: 8px; padding: 12px 14px; margin: 0 0 10px; }
-.open b { color: var(--warn); }
-.open.gap { border-left-color: var(--navy-2); background: #EAF3EE; }
-.open.ok { border-left-color: #3C8D3C; background: #EEF8EE; }
-.tag { display: inline-block; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; padding: 2px 7px; border-radius: 5px; margin-right: 6px; background: #fff; border: 1px solid var(--line); color: var(--muted); }
-.src li { margin: 6px 0; font-size: 14px; }
-.src a { color: var(--navy-2); word-break: break-word; }
-.note { background: var(--soft); border-radius: 8px; padding: 12px 14px; font-size: 14px; }
+/* open points */
+.open { border-left: 6px solid #C77700; background: var(--warn-bg); border-radius: 14px; padding: 12px 14px; margin: 0 0 10px; box-shadow: 0 8px 18px -14px rgba(0,0,0,.4); }
+.open.gap { border-left-color: var(--navy-2); background: var(--mint); }
+.open.ok { border-left-color: #2E8B57; background: #E7F5EA; }
+.tag { display: inline-block; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; padding: 2px 8px; border-radius: 6px; margin-right: 6px; background: var(--gold-2); color: #3A2A08; }
 
-.gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-.shot { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; min-width: 0; }
+/* design gallery */
+.gallery { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
+.shot { margin: 0; background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 14px 30px -18px rgba(14,74,54,.6); min-width: 0; }
 .shot.big { grid-column: span 2; }
 .shot img { display: block; width: 100%; height: 230px; object-fit: cover; }
 .shot.big img { height: 340px; }
 .shot figcaption { padding: 12px 14px; font-size: 13.5px; color: var(--muted); }
 .shot figcaption b { display: block; color: var(--navy); font-family: var(--display); font-size: 15px; margin-bottom: 2px; }
-.logo-bar { display: inline-block; font-size: 12px; color: var(--muted); }
-@media (max-width: 860px) { .grid2, .grid3 { grid-template-columns: minmax(0, 1fr); } .gallery { grid-template-columns: minmax(0, 1fr); } .shot.big { grid-column: auto; } .shot img, .shot.big img { height: 220px; } }
+
+/* daily photos */
+.photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.photos figure { margin: 0; background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 22px -16px rgba(14,74,54,.5); }
+.photos img { display: block; width: 100%; height: 190px; object-fit: cover; }
+.photos figcaption { padding: 10px 12px; font-size: 13.5px; }
+
+.src li { margin: 6px 0; font-size: 14px; }
+.src a { color: var(--navy-2); word-break: break-word; }
+
+@media (max-width: 860px) { .grid2 { grid-template-columns: minmax(0,1fr); } .gallery { grid-template-columns: minmax(0,1fr); } .shot.big { grid-column: auto; } .shot img, .shot.big img { height: 220px; } }
 @media (max-width: 600px) {
-  header.band h1 { font-size: 20px; }
+  header.band { padding: 22px; }
+  header.band h1 { font-size: 23px; }
   .asof { text-align: left; width: 100%; }
   dl.kv { grid-template-columns: 1fr; gap: 2px; }
   dl.kv dd { margin-bottom: 8px; }
+  td.name { min-width: 80px; max-width: 110px; }
 }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-
-/* ---- livelier look: deep green and brick-gold, tinted ground, cards with depth ---- */
-:root {
-  --bg: #E9F2ED;
-  --panel: #FFFFFF;
-  --ink: #14261E;
-  --muted: #4F6B5D;
-  --line: #CFE0D6;
-  --navy: #0E4A36;
-  --navy-2: #1F6B52;
-  --soft: #DCEBE3;
-  --gold: #C98B2B;
-  --gold-2: #F2D08A;
-  --mint: #F1F8F4;
-  --red: #F4C7C3; --yellow: #FFF2A8; --green: #C6E6C0;
-  --warn: #8A4B00; --warn-bg: #FFF4E0;
-}
-body { background: linear-gradient(180deg, #E9F2ED 0%, #F6F1E7 100%) fixed; font-size: 15.5px; }
-header.band {
-  background: linear-gradient(115deg, rgba(14,74,54,.96) 0%, rgba(14,74,54,.86) 48%, rgba(14,74,54,.55) 100%), url("hero.jpg") center 30% / cover no-repeat;
-  color: #fff; border-radius: 18px; padding: 32px 30px; min-height: 200px;
-  box-shadow: 0 18px 40px -18px rgba(14,74,54,.6);
-}
-header.band h1 { color: #fff; font-size: 30px; letter-spacing: -.2px; }
-header.band .sub { color: #D7EBDF; font-size: 15px; }
-.brandrow .logo { filter: brightness(0) invert(1); margin-bottom: 14px; }
-.asof { background: var(--gold); color: #1B1406; border-radius: 14px; padding: 12px 18px; box-shadow: 0 8px 20px -10px rgba(0,0,0,.4); }
-.asof .k { color: #3A2A08; }
-.asof .v { font-size: 20px; color: #1B1406; }
-
-nav.tabs { background: transparent; padding: 14px 0; gap: 8px; }
-nav.tabs button { border: none; background: #fff; color: var(--navy); border-radius: 999px; padding: 10px 18px; box-shadow: 0 4px 12px -8px rgba(14,74,54,.5); }
-nav.tabs button:hover { background: var(--gold-2); }
-nav.tabs button[aria-selected="true"] { background: var(--navy); color: #fff; box-shadow: 0 8px 18px -8px rgba(14,74,54,.8); }
-
-.card { border: none; border-radius: 18px; padding: 22px; box-shadow: 0 10px 28px -16px rgba(14,74,54,.35); }
-h2 { font-size: 24px; padding-left: 14px; position: relative; }
-h2::before { content: ""; position: absolute; left: 0; top: 4px; bottom: 4px; width: 5px; border-radius: 3px; background: var(--gold); }
-.hero-line { font-size: 18px; color: var(--ink); }
-.fact { border: none; border-radius: 16px; padding: 16px 18px; background: var(--navy); color: #fff; box-shadow: 0 10px 22px -12px rgba(14,74,54,.7); }
-.fact:nth-child(2n) { background: var(--gold); color: #1B1406; }
-.fact:nth-child(3n) { background: var(--navy-2); }
-.fact .k { color: rgba(255,255,255,.82); }
-.fact:nth-child(2n) .k { color: #3A2A08; }
-.fact .v { color: #fff; font-size: 30px; }
-.fact:nth-child(2n) .v { color: #1B1406; }
-.fact .s { color: rgba(255,255,255,.8); }
-.fact:nth-child(2n) .s { color: #3A2A08; }
-.anchor-row a { border: none; background: var(--soft); color: var(--navy); border-radius: 999px; padding: 9px 15px; }
-.anchor-row a:hover { background: var(--gold-2); }
-.pill { background: var(--gold-2); color: #1B1406; }
-
-thead th { background: var(--soft); }
-thead tr.grp th { background: var(--navy); }
-table { border-radius: 12px; }
-.scroll { border-radius: 14px; border: none; box-shadow: inset 0 0 0 1px var(--line); }
-tr.floorhead td { background: var(--gold-2); color: #3A2A08; }
-tr.elev td { background: var(--mint); }
-.open { border-radius: 14px; border-left-width: 6px; box-shadow: 0 8px 18px -14px rgba(0,0,0,.4); }
-.open.gap { background: var(--mint); border-left-color: var(--navy-2); }
-.open.ok { background: #E7F5EA; border-left-color: #2E8B57; }
-.note { background: var(--mint); border-radius: 14px; box-shadow: inset 0 0 0 1px var(--line); }
-.shot { border: none; border-radius: 18px; box-shadow: 0 14px 30px -18px rgba(14,74,54,.6); }
-.shot figcaption { background: #fff; }
-.bar > b { background: var(--gold); }
-.tag { background: var(--gold-2); color: #3A2A08; border: none; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } html { scroll-behavior: auto; } }
 </style>
 </head>
 <body>
 <div class="wrap">
 
 <header class="band">
-  <div class="brandrow">
-    <img class="logo" src="imarat-logo.png" alt="IMARAT logo" onerror="this.remove()">
+  <div>
+    <img class="logo" src="imarat-logo.png" alt="IMARAT" onerror="this.remove()">
     <h1>G-11 Courtyard by Marriott</h1>
-    <div class="sub">Hotel project, G-11 Markaz, Islamabad · Developed by IMARAT</div>
+    <div class="sub">Hotel project · G-11 Markaz, Islamabad</div>
   </div>
-  <div class="asof">
-    <div class="k">Progress as of</div>
-    <div class="v" id="asof">26 November 2026</div>
-  </div>
+  <div class="asof"><div class="k">Progress as of</div><div class="v" id="asof">26 Nov 2026</div></div>
 </header>
 
-<nav class="tabs" role="tablist" aria-label="Sections">
-  <button role="tab" data-tab="home" aria-selected="true" aria-controls="p-home" id="b-home">Home</button>
-  <button role="tab" data-tab="progress" aria-selected="false" aria-controls="p-progress" id="b-progress">Site progress</button>
-  <button role="tab" data-tab="rooms" aria-selected="false" aria-controls="p-rooms" id="b-rooms">Room by room</button>
-  <button role="tab" data-tab="types" aria-selected="false" aria-controls="p-types" id="b-types">Room types</button>
-  <button role="tab" data-tab="log" aria-selected="false" aria-controls="p-log" id="b-log">Weekly log</button>
-  <button role="tab" data-tab="design" aria-selected="false" aria-controls="p-design" id="b-design">Design</button>
-  <button role="tab" data-tab="open" aria-selected="false" aria-controls="p-open" id="b-open">Open points</button>
-  <button role="tab" data-tab="imarat" aria-selected="false" aria-controls="p-imarat" id="b-imarat">About IMARAT</button>
+<nav class="menu" aria-label="Sections">
+  <button data-tab="home">Home</button>
+  <button data-tab="today">Today</button>
+  <div class="dd" id="dd-progress">
+    <button class="dd-btn" aria-expanded="false" aria-haspopup="true">Progress ▾</button>
+    <div class="dd-menu" role="menu">
+      <button role="menuitem" data-tab="progress" data-sub="summary">Combined summary</button>
+      <button role="menuitem" data-tab="progress" data-sub="grey">Grey works</button>
+      <button role="menuitem" data-tab="progress" data-sub="mep">MEP works</button>
+      <button role="menuitem" data-tab="progress" data-sub="finishing">Finishing works</button>
+      <button role="menuitem" data-tab="progress" data-sub="wood">Woodworks</button>
+      <button role="menuitem" data-tab="progress" data-sub="floors">All activities by floor</button>
+    </div>
+  </div>
+  <div class="dd" id="dd-rooms">
+    <button class="dd-btn" aria-expanded="false" aria-haspopup="true">Rooms ▾</button>
+    <div class="dd-menu" role="menu">
+      <button role="menuitem" data-tab="rooms" data-sub="room">Room by room</button>
+      <button role="menuitem" data-tab="rooms" data-sub="types">Room types</button>
+    </div>
+  </div>
+  <button data-tab="log">Weekly log</button>
+  <button data-tab="design">Design</button>
+  <button data-tab="open">Open points</button>
+  <button data-tab="imarat">About IMARAT</button>
 </nav>
 
-<!-- ============ HOME ============ -->
-<section id="p-home" class="panel" role="tabpanel" aria-labelledby="b-home">
+<!-- HOME -->
+<section id="p-home" class="panel" data-panel="home">
   <div class="card">
     <h2>Project overview</h2>
     <p class="hero-line">A 200-room hotel on a 33,600 sq ft plot in G-11 Markaz, Islamabad. It has two basements, a ground-level restaurant and banquet complex, guest floors from the 3rd to the 8th, and a 9th-floor amenity level.</p>
@@ -227,33 +203,22 @@ tr.elev td { background: var(--mint); }
       <div class="fact"><div class="k">Plot area</div><div class="v">33,600</div><div class="s">sq ft</div></div>
       <div class="fact"><div class="k">Levels</div><div class="v">15</div><div class="s">2 basements to roof</div></div>
     </div>
-    <div class="anchor-row">
-      <a href="#" data-go="progress">See site progress</a>
-      <a href="#" data-go="rooms">Room by room</a>
-      <a href="#" data-go="types">Room types</a>
-      <a href="#" data-go="log">Weekly log</a>
-      <a href="#" data-go="design">Design renders</a>
-      <a href="#" data-go="open">Open points</a>
-      <a href="#" data-go="imarat">About IMARAT</a>
-    </div>
   </div>
-
   <div class="grid2" style="margin-top:14px">
     <div class="card">
       <h2>Project details</h2>
-      <dl class="kv" style="margin-top:12px">
+      <dl class="kv">
         <dt>Project</dt><dd>Courtyard by Marriott, G-11 Islamabad</dd>
         <dt>Type</dt><dd>New-build hotel under the Courtyard by Marriott brand. IMARAT is the partner, under its agreement with Marriott.</dd>
         <dt>Location</dt><dd>G-11 Markaz, Islamabad, Pakistan</dd>
         <dt>Developer</dt><dd>IMARAT Group</dd>
-        <dt>Plot area</dt><dd>33,600 sq ft</dd>
         <dt>Courtyard</dt><dd>An open-to-sky courtyard in the middle of the building, with no slab from the 4th floor up.</dd>
         <dt>Site status</dt><dd>Guest-room floors under way. Finishing and woodworks not yet started on the record.</dd>
       </dl>
     </div>
     <div class="card">
       <h2>What the building contains</h2>
-      <ul class="clean" style="margin-top:12px">
+      <ul class="clean">
         <li><b>Guest accommodation:</b> 200 rooms (King, Twin, Junior Suite, accessible), 26 with a courtyard view.</li>
         <li><b>Restaurants and kitchens:</b> all-day dining (220 seats), speciality restaurant, coffee shop, main and speciality kitchens, bakery.</li>
         <li><b>Banqueting and meetings:</b> 99 ft x 108 ft banquet hall with pre-function lobby, five meeting rooms and a board room.</li>
@@ -263,187 +228,150 @@ tr.elev td { background: var(--mint); }
       </ul>
     </div>
   </div>
-
-  <div class="grid2" style="margin-top:14px">
-    <div class="card">
-      <h2>Levels</h2>
-      <div class="scroll" style="margin-top:10px">
-        <table>
-          <thead><tr><th class="name">Level</th><th>Clear height</th><th>Main use</th></tr></thead>
-          <tbody>
-            <tr><td class="name">Basement-02</td><td>11'-11"</td><td class="wide">Substation, transformer and LT room, pump room, sewerage tanks</td></tr>
-            <tr><td class="name">Basement-01</td><td>11'-11"</td><td class="wide">Electrical rooms, garbage room, duct openings</td></tr>
-            <tr><td class="name">Lower ground</td><td>16'-0"</td><td class="wide">Main and speciality kitchens, laundry, stores, staff dining, water and septic tanks</td></tr>
-            <tr><td class="name">Ground</td><td>Varies</td><td class="wide">Lobby and reception, restaurant, coffee shop, commercial units, offices, loading dock</td></tr>
-            <tr><td class="name">Mezzanine</td><td>7'-10"</td><td class="wide">CCTV, AHU and IT rooms; cantilever over commercial space</td></tr>
-            <tr><td class="name">1st floor</td><td>Up to 20'</td><td class="wide">Banquet hall, banquet kitchen, bridal room, salons</td></tr>
-            <tr><td class="name">2nd floor</td><td>11'-11"</td><td class="wide">Board rooms, five meeting rooms, pantry, balconies</td></tr>
-            <tr><td class="name">3rd floor</td><td>11'-11"</td><td class="wide">All-day dining (220 seats), show kitchen, private dining, prayer rooms, 15 guest rooms</td></tr>
-            <tr><td class="name">4th to 8th floor</td><td>11'-11"</td><td class="wide">37 guest rooms each, junior suites, accessible room, courtyard void</td></tr>
-            <tr><td class="name">9th floor</td><td>11'-11"</td><td class="wide">Speciality restaurant, gym, spa, swimming pool. Pool zone and facade marked on hold.</td></tr>
-            <tr><td class="name">Roof</td><td>To +138'-11"</td><td class="wide">Chillers and plant, pumps, boilers, overhead water tanks, fire-fighting tank</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="card">
-      <h2>Where the work stands</h2>
-      <p class="muted small" style="margin-bottom:10px">From the tracker as of 26 November 2026. Averages across all 200 rooms.</p>
-      <div class="facts" style="margin:0;grid-template-columns:1fr 1fr">
-        <div class="fact"><div class="k">Block work</div><div class="v" id="h-block">–</div></div>
-        <div class="fact"><div class="k">Plaster</div><div class="v" id="h-plaster">–</div></div>
-        <div class="fact"><div class="k">Floor screed</div><div class="v" id="h-screed">–</div></div>
-        <div class="fact"><div class="k">2nd fix (MEP)</div><div class="v" id="h-2nd">–</div></div>
-      </div>
-      <p style="margin-top:12px">Block work, plaster and screed are largely complete on the guest floors. MEP second fix is about a quarter done. The finishing and woodworks activities have no progress recorded yet. See <a href="#" data-go="open">Open points</a> for what needs checking.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ============ SITE PROGRESS ============ -->
-<section id="p-progress" class="panel" role="tabpanel" aria-labelledby="b-progress" hidden>
-  <div class="card">
-    <h2>Site progress by floor</h2>
-    <p class="muted small">Average of the rooms on each floor, as of 26 November 2026. Scroll sideways to see every activity.</p>
-    <div class="legend" style="margin-top:10px">
-      <span><i style="background:var(--red)"></i>0%</span>
-      <span><i style="background:var(--yellow)"></i>In progress</span>
-      <span><i style="background:var(--green)"></i>100%</span>
-      <span><i style="background:#fff"></i>Blank: not yet entered</span>
-    </div>
-    <div class="scroll"><table id="summary"></table></div>
-  </div>
   <div class="card" style="margin-top:14px">
-    <h2>Reading the table</h2>
-    <ul class="clean small">
-      <li>Each figure is the share of the work done on that floor, averaged over its rooms.</li>
-      <li>The tracker holds one snapshot. It has no history yet, so the rate of progress cannot be read from it.</li>
-      <li>Figures are typed in from site reports. They are not measured on site.</li>
-    </ul>
+    <h2>Levels</h2>
+    <div class="scroll"><table>
+      <thead><tr><th class="name">Level</th><th>Clear height</th><th>Main use</th></tr></thead>
+      <tbody>
+        <tr><td class="name">Basement-02</td><td>11'-11"</td><td class="wide">Substation, transformer and LT room, pump room, sewerage tanks</td></tr>
+        <tr><td class="name">Basement-01</td><td>11'-11"</td><td class="wide">Electrical rooms, garbage room, duct openings</td></tr>
+        <tr><td class="name">Lower ground</td><td>16'-0"</td><td class="wide">Main and speciality kitchens, laundry, stores, staff dining, water and septic tanks</td></tr>
+        <tr><td class="name">Ground</td><td>Varies</td><td class="wide">Lobby and reception, restaurant, coffee shop, commercial units, offices, loading dock</td></tr>
+        <tr><td class="name">Mezzanine</td><td>7'-10"</td><td class="wide">CCTV, AHU and IT rooms; cantilever over commercial space</td></tr>
+        <tr><td class="name">1st floor</td><td>Up to 20'</td><td class="wide">Banquet hall, banquet kitchen, bridal room, salons</td></tr>
+        <tr><td class="name">2nd floor</td><td>11'-11"</td><td class="wide">Board rooms, five meeting rooms, pantry, balconies</td></tr>
+        <tr><td class="name">3rd floor</td><td>11'-11"</td><td class="wide">All-day dining (220 seats), show kitchen, private dining, prayer rooms, 15 guest rooms</td></tr>
+        <tr><td class="name">4th to 8th floor</td><td>11'-11"</td><td class="wide">37 guest rooms each, junior suites, accessible room, courtyard void</td></tr>
+        <tr><td class="name">9th floor</td><td>11'-11"</td><td class="wide">Speciality restaurant, gym, spa, swimming pool. Pool zone and facade on hold.</td></tr>
+        <tr><td class="name">Roof</td><td>To +138'-11"</td><td class="wide">Chillers and plant, pumps, boilers, overhead water tanks, fire-fighting tank</td></tr>
+      </tbody>
+    </table></div>
   </div>
 </section>
 
-<!-- ============ ROOM BY ROOM ============ -->
-<section id="p-rooms" class="panel" role="tabpanel" aria-labelledby="b-rooms" hidden>
+<!-- TODAY -->
+<section id="p-today" class="panel" data-panel="today" hidden>
   <div class="card">
-    <h2>Room by room</h2>
-    <p class="muted small">Pick a floor, or search a room number. Each row is one room.</p>
-    <div class="controls" style="margin-top:10px">
-      <label>Floor <select id="fFloor"></select></label>
-      <label>Room number <input id="fSearch" type="search" placeholder="e.g. 415" inputmode="numeric"></label>
-      <div class="count" id="count"></div>
-    </div>
-    <div class="legend">
+    <h2>Today on site</h2>
+    <div class="photos" id="photos"></div>
+  </div>
+</section>
+
+<!-- PROGRESS -->
+<section id="p-progress" class="panel" data-panel="progress" hidden>
+  <div class="card">
+    <div class="subnav" id="subnav-progress"></div>
+    <div id="sub-summary" class="sub"></div>
+    <div id="sub-grey" class="sub" hidden></div>
+    <div id="sub-mep" class="sub" hidden></div>
+    <div id="sub-finishing" class="sub" hidden></div>
+    <div id="sub-wood" class="sub" hidden></div>
+    <div id="sub-floors" class="sub" hidden></div>
+    <div class="legend" style="margin-top:12px">
       <span><i style="background:var(--red)"></i>0%</span>
       <span><i style="background:var(--yellow)"></i>In progress</span>
       <span><i style="background:var(--green)"></i>100%</span>
-      <span><i style="background:#fff"></i>Blank: not yet entered</span>
+      <span><i style="background:#fff"></i>Not yet entered</span>
     </div>
-    <div class="scroll" style="max-height:70vh;overflow:auto"><table id="rooms"></table></div>
   </div>
 </section>
 
-<!-- ============ ROOM TYPES ============ -->
-<section id="p-types" class="panel" role="tabpanel" aria-labelledby="b-types" hidden>
+<!-- ROOMS -->
+<section id="p-rooms" class="panel" data-panel="rooms" hidden>
   <div class="card">
-    <h2>Room types by floor</h2>
-    <p class="muted small">Number of rooms of each type, and the room numbers on each floor.</p>
-    <div class="scroll" style="margin-top:10px"><table id="types"></table></div>
+    <div class="subnav" id="subnav-rooms"></div>
+    <div id="sub-room" class="sub">
+      <div class="controls">
+        <label>Floor <select id="fFloor"></select></label>
+        <label>Room number <input id="fSearch" type="search" placeholder="e.g. 415" inputmode="numeric"></label>
+        <div class="count" id="count"></div>
+      </div>
+      <div class="scroll bigscroll"><table id="rooms"></table></div>
+    </div>
+    <div id="sub-types" class="sub" hidden>
+      <div class="scroll"><table id="types"></table></div>
+    </div>
   </div>
 </section>
 
-<!-- ============ WEEKLY LOG ============ -->
-<section id="p-log" class="panel" role="tabpanel" aria-labelledby="b-log" hidden>
+<!-- LOG -->
+<section id="p-log" class="panel" data-panel="log" hidden>
   <div class="card">
-    <h2>Weekly progress log</h2>
-    <p class="muted small">One row per weekly update, so the rate of progress can be seen. The averages are across all 200 guest rooms.</p>
-    <div class="scroll" style="margin-top:12px"><table id="logtable"></table></div>
+    <h2>Weekly log</h2>
+    <div class="scroll"><table id="logtable"></table></div>
   </div>
   <div class="card" style="margin-top:14px">
     <h2>Overall progress over time</h2>
-    <p class="muted small" id="chartnote"></p>
-    <div id="chart" style="margin-top:10px"></div>
-  </div>
-  <div class="card note" style="margin-top:14px">
-    <b>How this page is updated.</b> The tracker is updated every Friday, and sometimes a day earlier or later. The page is refreshed at this same link. Bookmark it: it always shows the latest update. The date at the top is the date the progress was recorded, not the date of the refresh.
+    <div id="chart"></div>
   </div>
 </section>
 
-<!-- ============ DESIGN ============ -->
-<section id="p-design" class="panel" role="tabpanel" aria-labelledby="b-design" hidden>
+<!-- DESIGN -->
+<section id="p-design" class="panel" data-panel="design" hidden>
   <div class="card">
     <h2>Design renders</h2>
-    <p class="muted small">Architect's renders of the building, by Suhail &amp; Fawad Architects. They show design intent. Check any detail against the current drawings before using it for a decision.</p>
+    <p class="muted small">Renders by Suhail &amp; Fawad Architects.</p>
   </div>
   <div class="gallery" style="margin-top:14px">
-    <figure class="shot big"><img src="renders/corner-day.jpg" alt="Daytime corner view of the Courtyard by Marriott hotel, G-11 Markaz" loading="lazy"><figcaption><b>Corner view, daytime</b> The main street-side elevation, with the brick facade, balconies and the arched entrance.</figcaption></figure>
-    <figure class="shot"><img src="renders/front-entrance.jpg" alt="Front elevation with the entrance sign" loading="lazy"><figcaption><b>Front elevation</b> Entrance and ground-floor sign.</figcaption></figure>
-    <figure class="shot"><img src="renders/front-balconies.jpg" alt="Front elevation with balconies on the upper floors" loading="lazy"><figcaption><b>Upper floors and balconies</b> The stepped balconies and planters on the guest floors.</figcaption></figure>
-    <figure class="shot"><img src="renders/corner-left.jpg" alt="Corner view from the left" loading="lazy"><figcaption><b>Corner view, from the left</b> The arched screen at the top of the building.</figcaption></figure>
-    <figure class="shot"><img src="renders/front-arches.jpg" alt="Front elevation with ground-floor arches" loading="lazy"><figcaption><b>Ground-floor arches</b> The arched openings at the base, with the sign panel.</figcaption></figure>
-    <figure class="shot"><img src="renders/side-elevation.jpg" alt="Side elevation" loading="lazy"><figcaption><b>Side elevation</b> The side with the arcade at the base.</figcaption></figure>
-    <figure class="shot big"><img src="renders/night-concept.jpg" alt="Night facade lighting concept" loading="lazy"><figcaption><b>Night lighting concept</b> A lighting concept by The Electron, not part of the architect's set. It shows what the lit facade could look like. No decision on it is recorded in the drawings.</figcaption></figure>
+    <figure class="shot big"><img src="renders/corner-day.jpg" alt="Daytime corner view of the Courtyard by Marriott hotel" loading="lazy"><figcaption><b>Corner view, daytime</b>The main street-side elevation, with the brick facade, balconies and the arched entrance.</figcaption></figure>
+    <figure class="shot"><img src="renders/front-entrance.jpg" alt="Front elevation with the entrance sign" loading="lazy"><figcaption><b>Front elevation</b>Entrance and ground-floor sign.</figcaption></figure>
+    <figure class="shot"><img src="renders/front-balconies.jpg" alt="Front elevation with balconies" loading="lazy"><figcaption><b>Upper floors and balconies</b>Stepped balconies and planters on the guest floors.</figcaption></figure>
+    <figure class="shot"><img src="renders/corner-left.jpg" alt="Corner view from the left" loading="lazy"><figcaption><b>Corner view, from the left</b>The arched screen at the top of the building.</figcaption></figure>
+    <figure class="shot"><img src="renders/front-arches.jpg" alt="Front elevation with ground-floor arches" loading="lazy"><figcaption><b>Ground-floor arches</b>Arched openings at the base, with the sign panel.</figcaption></figure>
+    <figure class="shot"><img src="renders/side-elevation.jpg" alt="Side elevation" loading="lazy"><figcaption><b>Side elevation</b>The side with the arcade at the base.</figcaption></figure>
+    <figure class="shot big"><img src="renders/night-concept.jpg" alt="Night facade lighting concept" loading="lazy"><figcaption><b>Night lighting concept</b>A lighting concept by The Electron, not part of the architect's set.</figcaption></figure>
   </div>
 </section>
 
-<!-- ============ OPEN POINTS ============ -->
-<section id="p-open" class="panel" role="tabpanel" aria-labelledby="b-open" hidden>
-  <div class="card">
-    <h2>Open points and things to check</h2>
-    <p class="muted small">These come from reading the tracker and the drawings against each other. Some may be recording gaps rather than real delays, and that is the first thing to confirm.</p>
-  </div>
-  <div class="stack" style="margin-top:14px">
-    <div class="open"><span class="tag">Sequence</span><b>Waterproofing and caulking show 0% while block work is 100%.</b> Washroom waterproofing normally follows block work and comes before tiling. Either it has not started, or it is not being recorded. Confirm which.</div>
-    <div class="open"><span class="tag">Sequence</span><b>1st fix (conduits) shows 0% while plaster is 98%.</b> Conduits are usually run before plaster closes the walls. Either the first fix is recorded in another place, or it is behind. Check with the MEP team.</div>
-    <div class="open"><span class="tag">Gap</span><b>Finishing and woodworks have no progress.</b> Windows, marble sills, gypsum ceilings, washroom tiling, paint, doors, wardrobes and hardware all read 0% (or blank). Confirm whether this is real or not yet logged.</div>
-    <div class="open"><span class="tag">Floor</span><b>8th floor floor-screed is 55%.</b> The other guest floors are at 95 to 97%. The 8th floor needs a look.</div>
-    <div class="open"><span class="tag">Drawings</span><b>Window quantities are missing on the mezzanine.</b> One window type (AW3) has no quantity entered, and some rows on the 9th floor are blank.</div>
-    <div class="open"><span class="tag">Design</span><b>Items on hold.</b> The 9th floor pool zone and facade are marked ON HOLD on the drawing. The marble design change is on hold too. Work in these areas should not be counted as scheduled.</div>
-    <div class="open gap"><span class="tag">Record</span><b>The tracker has one snapshot and no dates per activity.</b> Without a weekly record, the rate of progress and the finish date cannot be worked out. Suggest one update per week with the date.</div>
-    <div class="open gap"><span class="tag">Scope</span><b>No opening date or target completion is recorded in these files.</b> Add the contract completion date and the Marriott opening target so progress can be measured against them.</div>
-    <div class="open ok"><span class="tag">Done</span><b>Plaster on the guest floors is about 98%.</b> Block work is complete on all floors. Floor screed is at 95 to 97% except the 8th floor.</div>
+<!-- OPEN POINTS -->
+<section id="p-open" class="panel" data-panel="open" hidden>
+  <div class="stack">
+    <div class="open"><span class="tag">Sequence</span><b>Waterproofing and caulking show 0% while block work is 100%.</b> Washroom waterproofing normally follows block work and comes before tiling. Either it has not started, or it is not being recorded.</div>
+    <div class="open"><span class="tag">Sequence</span><b>1st fix (conduits) shows 0% while plaster is 98%.</b> Conduits are usually run before plaster closes the walls. Either the first fix is recorded elsewhere, or it is behind.</div>
+    <div class="open"><span class="tag">Gap</span><b>Finishing and woodworks have no progress.</b> Windows, marble sills, gypsum ceilings, washroom tiling, paint, doors, wardrobes and hardware all read 0% or blank. Confirm whether this is real or not yet logged.</div>
+    <div class="open"><span class="tag">Floor</span><b>8th floor screed is 55%.</b> The other guest floors are at 95 to 97%.</div>
+    <div class="open"><span class="tag">Drawings</span><b>Window quantities are missing on the mezzanine.</b> One window type (AW3) has no quantity, and some rows on the 9th floor are blank.</div>
+    <div class="open"><span class="tag">Design</span><b>Items on hold.</b> The 9th-floor pool zone and facade, and the marble design change, are on hold. Work in these areas should not be counted as scheduled.</div>
+    <div class="open gap"><span class="tag">Record</span><b>One snapshot, no dates per activity.</b> Without a dated record, the rate of progress and the finish date cannot be worked out.</div>
+    <div class="open gap"><span class="tag">Scope</span><b>No contract completion or Marriott opening date is recorded.</b> Adding them would let progress be measured against a target.</div>
+    <div class="open ok"><span class="tag">Done</span><b>Plaster on the guest floors is about 98%.</b> Block work is complete on all floors. Floor screed is 95 to 97%, except the 8th floor.</div>
   </div>
 </section>
 
-<!-- ============ ABOUT IMARAT ============ -->
-<section id="p-imarat" class="panel" role="tabpanel" aria-labelledby="b-imarat" hidden>
+<!-- ABOUT IMARAT -->
+<section id="p-imarat" class="panel" data-panel="imarat" hidden>
   <div class="grid2">
     <div class="card">
       <h2>IMARAT Group</h2>
-      <p style="margin-top:10px">IMARAT is a Pakistani group active in real estate development, construction and building materials, hospitality, and property technology. Its main business in Islamabad is real estate, and it has built hotels with international chains.</p>
-      <ul class="clean" style="margin-top:10px">
+      <p style="margin-top:8px">IMARAT is a Pakistani group active in real estate development, construction and building materials, hospitality, and property technology.</p>
+      <ul class="clean">
         <li><b>Real estate development</b> in the Federal Capital, including the Golf/Hills View luxury apartments with a country club.</li>
         <li><b>Hospitality:</b> hotels operated with Marriott International (Courtyard and Residence Inn) and Sheraton.</li>
         <li><b>Construction and materials:</b> a planned building-materials zone and the IMARAT Builders Mall in DHA Multan.</li>
         <li><b>Property technology:</b> Graana.com (online property marketplace), Agency21 (agency network) and PropSure Digital (verification and feasibility).</li>
-        <li><b>Education and philanthropy:</b> a planned architecture and building-materials institute, and the Ali Akbar Foundation.</li>
       </ul>
     </div>
     <div class="card">
-      <h2>What to take with a pinch of salt</h2>
-      <p class="small muted" style="margin-bottom:8px">Much of the public information about IMARAT comes from IMARAT or its own companies. Read these points before quoting the group.</p>
+      <h2>Notes on sources</h2>
       <ul class="clean small">
-        <li>Graana.com, the source of much of the group's profile, is one of IMARAT's own companies, so its articles are self-published.</li>
-        <li>The group says it has over 2,000 staff and more than 50 offices. Neither figure was checked against an independent source.</li>
-        <li>The group's own pages describe its industry as "the only sector destined to change the destiny of our country". That is marketing language, not a finding.</li>
-        <li>The number of hotels is not consistent between sources. One press release lists Courtyard and Residence Inn properties in Islamabad and Multan. A company profile says two hotels were launched in Islamabad and Rawalpindi. The two lists do not match.</li>
-        <li>No public source found gives the G-11 hotel's room count, owner, or opening date. This site relies on the drawings and the tracker for those.</li>
+        <li>Graana.com, a major source of the group's profile, is one of IMARAT's own companies, so its articles are self-published.</li>
+        <li>The group says it has over 2,000 staff and more than 50 offices. Neither figure has been checked against an independent source.</li>
+        <li>The hotel count differs between sources. Press releases list Courtyard and Residence Inn properties in Islamabad and Multan, and a company profile lists two hotels in Islamabad and Rawalpindi.</li>
+        <li>No public source found gives this hotel's room count, owner, or opening date. This site uses the drawings and tracker for those.</li>
       </ul>
     </div>
   </div>
   <div class="card" style="margin-top:14px">
     <h2>The Marriott partnership</h2>
-    <p style="margin-top:10px">IMARAT has signed franchise and development agreements with Marriott International for several hotels. In June 2021 IMARAT signed an MoU with principal builders to construct the Courtyard by Marriott in Islamabad. A 2023 press release describes IMARAT Hospitality as Marriott's partner for its hotels, which means Marriott's brand standards apply. The agreement terms are not public.</p>
+    <p style="margin-top:8px">In June 2021 IMARAT signed an MoU with principal builders to construct the Courtyard by Marriott in Islamabad. A 2023 press release describes IMARAT Hospitality as Marriott's partner for its hotels, which means Marriott's brand standards apply. The agreement terms are not public.</p>
   </div>
   <div class="card" style="margin-top:14px">
     <h2>Sources</h2>
-    <p class="muted small">Public pages consulted. Read them with the notes above in mind.</p>
-    <ul class="clean src" style="margin-top:10px">
+    <ul class="clean src">
       <li><a href="https://www.graana.com/blog/imarat-group-of-companies-ik-jazba-e-tameer/amp/" target="_blank" rel="noopener">IMARAT Group of Companies, Graana.com (company-linked profile)</a></li>
-      <li><a href="https://propakistani.pk/2021/06/08/imarat-group-inks-mou-with-principal-builders-to-construct-courtyard-by-marriott-international-in-islamabad/" target="_blank" rel="noopener">IMARAT Group inks MoU with principal builders for Courtyard by Marriott, Islamabad, ProPakistani, June 2021</a></li>
-      <li><a href="https://www.hospitalitynet.org/news/4116183/imarat-hospitality-and-marriott-international-a-partnership-to-redefine-hospitality-in-pakistan" target="_blank" rel="noopener">IMARAT Hospitality and Marriott International: a partnership, Hospitality Net, May 2023</a></li>
+      <li><a href="https://propakistani.pk/2021/06/08/imarat-group-inks-mou-with-principal-builders-to-construct-courtyard-by-marriott-international-in-islamabad/" target="_blank" rel="noopener">IMARAT Group inks MoU with principal builders for Courtyard by Marriott, ProPakistani, June 2021</a></li>
+      <li><a href="https://www.hospitalitynet.org/news/4116183/imarat-hospitality-and-marriott-international-a-partnership-to-redefine-hospitality-in-pakistan" target="_blank" rel="noopener">IMARAT Hospitality and Marriott International, Hospitality Net, May 2023</a></li>
       <li><a href="https://propakistani.pk/2021/10/08/imarat-group-dha-multan-sign-mou-for-the-construction-of-imarat-builders-mall/" target="_blank" rel="noopener">Imarat Group and DHA Multan sign MoU for Imarat Builders Mall, ProPakistani, October 2021</a></li>
-      <li><a href="https://www.graana.com/blog/imarat-x-marriott-a-new-era-in-the-hospitality-industry/amp" target="_blank" rel="noopener">IMARAT x Marriott: a new era in the hospitality industry, Graana.com (company-linked)</a></li>
     </ul>
   </div>
 </section>
@@ -452,8 +380,9 @@ tr.elev td { background: var(--mint); }
 
 <script>
 const DATA = {"heads": ["Block work", "Washroom waterproofing", "PVC pipe caulking", "Plaster", "Floor screed", "Other (margin)", "1st fix", "2nd fix", "3rd fix", "Windows", "Marble window sill", "Ceiling (gypsum)", "Washroom tiling", "Painting", "Other (margin)", "Doors", "Wardrobe & cabinets", "Door hardware", "Other (margin)"], "groups": ["1. GREY WORKS", "1. GREY WORKS", "1. GREY WORKS", "1. GREY WORKS", "1. GREY WORKS", "1. GREY WORKS", "2. MEP WORKS  (see MEP Room Tracker)", "2. MEP WORKS  (see MEP Room Tracker)", "2. MEP WORKS  (see MEP Room Tracker)", "3. FINISHING", "3. FINISHING", "3. FINISHING", "3. FINISHING", "3. FINISHING", "3. FINISHING", "4. WOODWORKS", "4. WOODWORKS", "4. WOODWORKS", "4. WOODWORKS"], "summary": [{"label": "3rd floor", "vals": [1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.2333, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "note": "15 rooms"}, {"label": "4th floor", "vals": [1.0, 0.0, 0.0, 0.9757, 0.9459, 0.0, 0.0, 0.2207, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "note": "37 rooms"}, {"label": "5th floor", "vals": [1.0, 0.0, 0.0, 0.9757, 0.973, 0.0, 0.0, 0.2568, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "note": "37 rooms"}, {"label": "6th floor", "vals": [1.0, 0.0, 0.0, 0.9757, 0.973, 0.0, 0.0, 0.2477, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "note": "37 rooms"}, {"label": "7th floor", "vals": [1.0, 0.0, 0.0, 0.9757, 0.973, 0.0, 0.0, 0.2658, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "note": "37 rooms"}, {"label": "8th floor", "vals": [1.0, 0.0, 0.0, 0.9757, 0.5541, 0.0, 0.0, 0.2477, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "note": "37 rooms"}, {"label": "ALL GUEST ROOMS", "vals": [1.0, 0.0, 0.0, 0.9775, 0.8925, 0.0, 0.0, 0.2467, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "note": "200 rooms"}], "rooms": [{"room": "304", "floor": "3RD FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "305", "floor": "3RD FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "306", "floor": "3RD FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "307", "floor": "3RD FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "308", "floor": "3RD FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "309", "floor": "3RD FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "310", "floor": "3RD FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "311", "floor": "3RD FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "312", "floor": "3RD FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "313", "floor": "3RD FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Accessible \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "314", "floor": "3RD FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "315", "floor": "3RD FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "316", "floor": "3RD FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "317", "floor": "3RD FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "318", "floor": "3RD FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "429", "floor": "4TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "430", "floor": "4TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "431", "floor": "4TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "432", "floor": "4TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "433", "floor": "4TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.0, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "434", "floor": "4TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "435", "floor": "4TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.0, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "436", "floor": "4TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "Twin \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "437", "floor": "4TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "401", "floor": "4TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.0, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "402", "floor": "4TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "403", "floor": "4TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "404", "floor": "4TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "405", "floor": "4TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "406", "floor": "4TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "407", "floor": "4TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "408", "floor": "4TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "409", "floor": "4TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "410", "floor": "4TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "411", "floor": "4TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "412", "floor": "4TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "413", "floor": "4TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Accessible \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 0.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "414", "floor": "4TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "415", "floor": "4TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "416", "floor": "4TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "417", "floor": "4TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "418", "floor": "4TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.0, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "419", "floor": "4TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "420", "floor": "4TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "421", "floor": "4TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "422", "floor": "4TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "423", "floor": "4TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 0.1, 0.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "424", "floor": "4TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "425", "floor": "4TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "426", "floor": "4TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "427", "floor": "4TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "428", "floor": "4TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.0, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "529", "floor": "5TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "530", "floor": "5TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "531", "floor": "5TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "532", "floor": "5TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "533", "floor": "5TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.0, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "534", "floor": "5TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "535", "floor": "5TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "536", "floor": "5TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "Twin \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "537", "floor": "5TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "501", "floor": "5TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.0, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "502", "floor": "5TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "503", "floor": "5TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "504", "floor": "5TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "505", "floor": "5TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "506", "floor": "5TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "507", "floor": "5TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "508", "floor": "5TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "509", "floor": "5TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "510", "floor": "5TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "511", "floor": "5TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "512", "floor": "5TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "513", "floor": "5TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Accessible \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "514", "floor": "5TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "515", "floor": "5TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "516", "floor": "5TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "517", "floor": "5TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "518", "floor": "5TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.0, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "519", "floor": "5TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "520", "floor": "5TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "521", "floor": "5TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "522", "floor": "5TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "523", "floor": "5TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 0.1, 0.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "524", "floor": "5TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "525", "floor": "5TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "526", "floor": "5TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "527", "floor": "5TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "528", "floor": "5TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.0, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "629", "floor": "6TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "630", "floor": "6TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "631", "floor": "6TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "632", "floor": "6TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "633", "floor": "6TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.0, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "634", "floor": "6TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "635", "floor": "6TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "636", "floor": "6TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "Twin \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "637", "floor": "6TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "601", "floor": "6TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.0, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "602", "floor": "6TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "603", "floor": "6TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "604", "floor": "6TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "605", "floor": "6TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "606", "floor": "6TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "607", "floor": "6TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "608", "floor": "6TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "609", "floor": "6TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "610", "floor": "6TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "611", "floor": "6TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "612", "floor": "6TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "613", "floor": "6TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Accessible \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "614", "floor": "6TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "615", "floor": "6TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "616", "floor": "6TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "617", "floor": "6TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "618", "floor": "6TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.0, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "619", "floor": "6TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "620", "floor": "6TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "621", "floor": "6TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "622", "floor": "6TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "623", "floor": "6TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 0.1, 0.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "624", "floor": "6TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "625", "floor": "6TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "626", "floor": "6TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "627", "floor": "6TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "628", "floor": "6TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "729", "floor": "7TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "730", "floor": "7TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "731", "floor": "7TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "732", "floor": "7TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "733", "floor": "7TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.0, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "734", "floor": "7TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "735", "floor": "7TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "736", "floor": "7TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "Twin \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "737", "floor": "7TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "701", "floor": "7TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "702", "floor": "7TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "703", "floor": "7TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "704", "floor": "7TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "705", "floor": "7TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "706", "floor": "7TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "707", "floor": "7TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "708", "floor": "7TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "709", "floor": "7TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "710", "floor": "7TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "711", "floor": "7TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "712", "floor": "7TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "713", "floor": "7TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Accessible \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "714", "floor": "7TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "715", "floor": "7TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "716", "floor": "7TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "717", "floor": "7TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "718", "floor": "7TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.0, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "719", "floor": "7TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "720", "floor": "7TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "721", "floor": "7TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "722", "floor": "7TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "723", "floor": "7TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 0.1, 0.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "724", "floor": "7TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "725", "floor": "7TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "726", "floor": "7TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "727", "floor": "7TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "728", "floor": "7TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.0, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "829", "floor": "8TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "830", "floor": "8TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "831", "floor": "8TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "832", "floor": "8TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "833", "floor": "8TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "834", "floor": "8TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "835", "floor": "8TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "836", "floor": "8TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "Twin \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "837", "floor": "8TH FLOOR", "elev": "Elevation 1 \u2013 Front (NW)", "type": "King \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "801", "floor": "8TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "802", "floor": "8TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "803", "floor": "8TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 0.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "804", "floor": "8TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "805", "floor": "8TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "806", "floor": "8TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "807", "floor": "8TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "808", "floor": "8TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "809", "floor": "8TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "King", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "810", "floor": "8TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "811", "floor": "8TH FLOOR", "elev": "Elevation 2 \u2013 Right (SW)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 0.5, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "812", "floor": "8TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "813", "floor": "8TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Accessible \u00b7 courtyard", "vals": [1.0, null, null, 1.0, 0.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "814", "floor": "8TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 1.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "815", "floor": "8TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 0.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "816", "floor": "8TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "King", "vals": [1.0, null, null, 1.0, 0.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "817", "floor": "8TH FLOOR", "elev": "Elevation 3 \u2013 Rear (SE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 0.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "818", "floor": "8TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 0.0, null, 0.0, 0.0, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "819", "floor": "8TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 0.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "820", "floor": "8TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 0.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "821", "floor": "8TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 0.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "822", "floor": "8TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 0.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "823", "floor": "8TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 0.1, 0.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "824", "floor": "8TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 0.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "825", "floor": "8TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 0.0, null, 0.0, 0.3333, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "826", "floor": "8TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "King", "vals": [1.0, null, null, 1.0, 0.0, null, 0.0, 0.0, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "827", "floor": "8TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "Twin", "vals": [1.0, null, null, 1.0, 0.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}, {"room": "828", "floor": "8TH FLOOR", "elev": "Elevation 4 \u2013 Left (NE)", "type": "Jr Suite", "vals": [1.0, null, null, 1.0, 0.0, null, 0.0, 0.1667, 0.0, null, null, null, null, null, null, null, null, null, null]}]};
+/* Daily photos: each entry is shown for 24 hours after `posted`, then it drops off the page. */
+const DAILY = [];
 
-/* ---------- helpers ---------- */
 const FLOOR_ORDER = ['3RD FLOOR','4TH FLOOR','5TH FLOOR','6TH FLOOR','7TH FLOOR','8TH FLOOR'];
 const FL_SHORT = { '3RD FLOOR':'3F','4TH FLOOR':'4F','5TH FLOOR':'5F','6TH FLOOR':'6F','7TH FLOOR':'7F','8TH FLOOR':'8F' };
 const pct = v => (v === null || v === undefined) ? '' : Math.round(v * 100) + '%';
@@ -461,40 +390,60 @@ const cls = v => (v === null || v === undefined || v === '') ? 'na' : (v === 0 ?
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const idx = name => DATA.heads.indexOf(name);
 const ALL = DATA.summary[DATA.summary.length - 1];
+const GROUPS = ['1. GREY WORKS','2. MEP WORKS','3. FINISHING','4. WOODWORKS'];
+const GLABEL = { '1. GREY WORKS':'Grey works', '2. MEP WORKS':'MEP works', '3. FINISHING':'Finishing works', '4. WOODWORKS':'Woodworks' };
+const colsOf = g => DATA.heads.map((h, i) => (DATA.groups[i] || '').startsWith(g) ? i : -1).filter(i => i >= 0);
+const avg = arr => { const v = arr.filter(x => x !== null && x !== undefined && x !== ''); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
+const fmtDate = iso => new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
-/* ---------- headline figures on Home ---------- */
-document.getElementById('h-block').textContent = pct(ALL.vals[idx('Block work')]);
-document.getElementById('h-plaster').textContent = pct(ALL.vals[idx('Plaster')]);
-document.getElementById('h-screed').textContent = pct(ALL.vals[idx('Floor screed')]);
-document.getElementById('h-2nd').textContent = pct(ALL.vals[idx('2nd fix')]);
+/* ---------- header date ---------- */
+document.getElementById('asof').textContent = '26 Nov 2026';
 
-/* ---------- column headers with group spans ---------- */
-const groupSpans = [];
-DATA.groups.forEach(g => {
-  if (!groupSpans.length || groupSpans[groupSpans.length - 1].name !== g) groupSpans.push({ name: g, n: 1 });
-  else groupSpans[groupSpans.length - 1].n++;
-});
-function headRows(firstLabel, lastLabel) {
-  const g = '<tr class="grp"><th class="name" rowspan="2">' + firstLabel + '</th>' +
-    groupSpans.map(s => '<th colspan="' + s.n + '">' + esc(s.name) + '</th>').join('') + '</tr>';
-  const h = '<tr>' + DATA.heads.map(x => '<th>' + esc(x) + '</th>').join('') + (lastLabel ? '<th>' + lastLabel + '</th>' : '') + '</tr>';
-  return '<thead>' + g + h + '</thead>';
+/* ---------- progress tables ---------- */
+function groupHead(firstLabel, cols) {
+  return '<thead><tr class="grp"><th class="name" rowspan="2">' + firstLabel + '</th>' +
+    '</tr><tr>' + cols.map(i => '<th>' + esc(DATA.heads[i]) + '</th>').join('') + '</tr></thead>';
 }
+function floorRows(cols) {
+  const rows = DATA.summary.map(r => {
+    const isAll = r.label === 'ALL GUEST ROOMS';
+    const name = isAll ? 'ALL ROOMS' : (r.label.match(/^(\d)/)[1] + 'F');
+    return '<tr class="' + (isAll ? 'total' : '') + '"><td class="name">' + name + '</td>' +
+      cols.map(i => '<td class="' + cls(r.vals[i]) + '">' + pct(r.vals[i]) + '</td>').join('') + '</tr>';
+  });
+  return '<tbody>' + rows.join('') + '</tbody>';
+}
+function groupTable(g) {
+  const cols = colsOf(g);
+  return '<div class="scroll"><table>' + groupHead('FLOOR', cols) + floorRows(cols) + '</table></div>';
+}
+function summaryTable() {
+  const head = '<thead><tr><th class="name">FLOOR</th>' + GROUPS.map(g => '<th>' + GLABEL[g] + '</th>').join('') + '<th>OVERALL</th></tr></thead>';
+  const rows = DATA.summary.map(r => {
+    const isAll = r.label === 'ALL GUEST ROOMS';
+    const name = isAll ? 'ALL ROOMS' : (r.label.match(/^(\d)/)[1] + 'F');
+    const cells = GROUPS.map(g => { const v = avg(colsOf(g).map(i => r.vals[i])); return '<td class="' + cls(v) + '">' + pct(v) + '</td>'; }).join('');
+    const ov = avg(r.vals);
+    return '<tr class="' + (isAll ? 'total' : '') + '"><td class="name">' + name + '</td>' + cells + '<td class="' + cls(ov) + '"><b>' + pct(ov) + '</b></td></tr>';
+  }).join('');
+  return '<div class="scroll"><table>' + head + '<tbody>' + rows + '</tbody></table></div>';
+}
+function allTable() {
+  const cols = DATA.heads.map((_, i) => i);
+  return '<div class="scroll"><table>' + groupHead('FLOOR', cols) + floorRows(cols) + '</table></div>';
+}
+document.getElementById('sub-summary').innerHTML = summaryTable();
+document.getElementById('sub-grey').innerHTML = groupTable(GROUPS[0]);
+document.getElementById('sub-mep').innerHTML = groupTable(GROUPS[1]);
+document.getElementById('sub-finishing').innerHTML = groupTable(GROUPS[2]);
+document.getElementById('sub-wood').innerHTML = groupTable(GROUPS[3]);
+document.getElementById('sub-floors').innerHTML = allTable();
 
-/* ---------- Site progress: floor table ---------- */
-const sumRows = DATA.summary.map(r => {
-  const isAll = r.label === 'ALL GUEST ROOMS';
-  const name = isAll ? 'ALL ROOMS' : (r.label.match(/^(\d)/)[1] + 'F');
-  return '<tr class="' + (isAll ? 'total' : '') + '"><td class="name">' + name + '</td>' +
-    r.vals.map(v => '<td class="' + cls(v) + '">' + pct(v) + '</td>').join('') +
-    '<td class="wide" style="white-space:nowrap">' + esc(r.note || '') + '</td></tr>';
-}).join('');
-document.getElementById('summary').innerHTML = headRows('FLOOR', 'ROOMS') + '<tbody>' + sumRows + '</tbody>';
-
-/* ---------- Room by room ---------- */
+/* ---------- room by room ---------- */
+const TYPES = ['King','Twin','Jr Suite','Accessible'];
 const floorSel = document.getElementById('fFloor');
 floorSel.innerHTML = '<option value="">All floors</option>' + FLOOR_ORDER.map(f => '<option value="' + f + '">' + FL_SHORT[f] + '</option>').join('');
-document.getElementById('rooms').innerHTML = headRows('ROOM · TYPE') + '<tbody id="roomBody"></tbody>';
+document.getElementById('rooms').innerHTML = '<thead><tr class="grp"><th class="name" rowspan="2">ROOM</th>' + GROUPS.map(g => '<th colspan="' + colsOf(g).length + '">' + GLABEL[g] + '</th>').join('') + '</tr><tr>' + DATA.heads.map(h => '<th>' + esc(h) + '</th>').join('') + '</tr></thead><tbody id="roomBody"></tbody>';
 const roomBody = document.getElementById('roomBody');
 const countEl = document.getElementById('count');
 function renderRooms() {
@@ -505,28 +454,24 @@ function renderRooms() {
     if (f && r.floor !== f) return;
     if (q && !r.room.includes(q)) return;
     n++;
-    if (r.floor !== lastFloor) { lastFloor = r.floor; lastElev = null;
-      html += '<tr class="floorhead"><td class="name" colspan="' + span + '">' + esc(r.floor) + '</td></tr>'; }
-    if (r.elev !== lastElev) { lastElev = r.elev;
-      html += '<tr class="elev"><td class="name" colspan="' + span + '">' + esc(r.elev) + '</td></tr>'; }
-    html += '<tr><td class="name">Room ' + r.room + ' <span class="muted" style="font-weight:400">· ' + esc(r.type) + '</span></td>' +
+    if (r.floor !== lastFloor) { lastFloor = r.floor; lastElev = null; html += '<tr class="floorhead"><td class="name" colspan="' + span + '">' + esc(r.floor) + '</td></tr>'; }
+    if (r.elev !== lastElev) { lastElev = r.elev; html += '<tr class="elev"><td class="name" colspan="' + span + '">' + esc(r.elev) + '</td></tr>'; }
+    html += '<tr><td class="name">' + r.room + '<div class="muted" style="font-weight:400;font-size:12px">' + esc(r.type) + '</div></td>' +
       r.vals.map(v => '<td class="' + cls(v) + '">' + pct(v) + '</td>').join('') + '</tr>';
   });
-  roomBody.innerHTML = html || '<tr><td class="name" colspan="' + span + '">No room matches.</td></tr>';
-  countEl.textContent = n + ' of 200 rooms';
+  roomBody.innerHTML = html || '<tr><td class="name" colspan="' + span + '">No matching room.</td></tr>';
+  countEl.textContent = n + ' of 200';
 }
 floorSel.addEventListener('change', renderRooms);
 document.getElementById('fSearch').addEventListener('input', renderRooms);
 renderRooms();
 
-/* ---------- Room types ---------- */
-const TYPES = ['King','Twin','Jr Suite','Accessible'];
+/* ---------- room types ---------- */
 const byFloor = {}; FLOOR_ORDER.forEach(f => byFloor[f] = []);
 DATA.rooms.forEach(r => byFloor[r.floor] && byFloor[r.floor].push(r));
 function ranges(nums) {
   nums = nums.slice().sort((a, b) => a - b); const out = []; let i = 0;
-  while (i < nums.length) { let j = i; while (j + 1 < nums.length && nums[j + 1] === nums[j] + 1) j++;
-    out.push(i === j ? String(nums[i]) : nums[i] + '-' + nums[j]); i = j + 1; }
+  while (i < nums.length) { let j = i; while (j + 1 < nums.length && nums[j + 1] === nums[j] + 1) j++; out.push(i === j ? String(nums[i]) : nums[i] + '-' + nums[j]); i = j + 1; }
   return out.join(', ');
 }
 let typeRows = ''; const totals = { King:0, Twin:0, 'Jr Suite':0, Accessible:0, all:0 };
@@ -535,73 +480,95 @@ FLOOR_ORDER.forEach(f => {
   const rows = TYPES.map(t => { const sel = rs.filter(r => r.type.startsWith(t)).map(r => +r.room); return { t, n: sel.length, nums: ranges(sel) }; }).filter(x => x.n);
   rows.forEach((x, i) => {
     totals[x.t] += x.n;
-    typeRows += '<tr>' + (i === 0 ? '<td class="name" rowspan="' + rows.length + '" style="vertical-align:middle">' + FL_SHORT[f] + ' · ' + rs.length + ' rooms</td>' : '') +
+    typeRows += '<tr>' + (i === 0 ? '<td class="name" rowspan="' + rows.length + '">' + FL_SHORT[f] + '<div class="muted" style="font-weight:400;font-size:12px">' + rs.length + ' rooms</div></td>' : '') +
       '<td class="wide">' + x.t + '</td><td>' + x.n + '</td><td class="rangecell">' + x.nums + '</td></tr>';
   });
   totals.all += rs.length;
 });
-document.getElementById('types').innerHTML =
-  '<thead><tr><th class="name">FLOOR</th><th class="wide">ROOM TYPE</th><th>QTY</th><th class="rangecell">ROOM NUMBERS</th></tr></thead>' +
-  '<tbody>' + typeRows + '<tr class="total"><td class="name">ALL</td><td class="wide">Total</td><td>' + totals.all + '</td><td class="rangecell">' +
-  TYPES.map(t => t + ' ' + totals[t]).join(' · ') + '</td></tr></tbody>';
+document.getElementById('types').innerHTML = '<thead><tr><th class="name">FLOOR</th><th class="wide">TYPE</th><th>QTY</th><th class="rangecell">ROOM NUMBERS</th></tr></thead><tbody>' + typeRows +
+  '<tr class="total"><td class="name">ALL</td><td class="wide">Total</td><td>' + totals.all + '</td><td class="rangecell">' + TYPES.map(t => t + ' ' + totals[t]).join(' · ') + '</td></tr></tbody>';
 
-/* ---------- Weekly log: add one entry per week (newest last). ---------- */
+/* ---------- weekly log ---------- */
 const KEY = ['Block work','Plaster','Floor screed','2nd fix','Windows','Painting','Doors'];
-const WEEKLY = [
-  { date: '2026-11-26', note: 'Baseline: first entry', vals: ALL.vals }
-];
-function fmtDate(iso) { const d = new Date(iso + 'T00:00:00'); return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }); }
-function overall(vals) { const n = vals.filter(v => v !== null && v !== undefined); return n.length ? n.reduce((a, b) => a + b, 0) / n.length : 0; }
+const WEEKLY = [ { date: '2026-11-26', note: 'Baseline', vals: ALL.vals } ];
 function renderLog() {
-  const last = WEEKLY[WEEKLY.length - 1];
-  document.getElementById('asof').textContent = fmtDate(last.date);
-  let head = '<thead><tr><th class="name">WEEK OF</th><th>OVERALL</th>' + KEY.map(k => '<th>' + esc(k) + '</th>').join('') + '<th class="wide">NOTE</th></tr></thead>';
-  let body = '<tbody>' + WEEKLY.slice().reverse().map((w, i, arr) => {
+  let head = '<thead><tr><th class="name">DATE</th><th>OVERALL</th>' + KEY.map(k => '<th>' + esc(k) + '</th>').join('') + '<th class="wide">NOTE</th></tr></thead>';
+  let body = '<tbody>' + WEEKLY.slice().reverse().map((w, i) => {
     const prev = WEEKLY[WEEKLY.length - 2 - i];
-    const ov = overall(w.vals);
-    const delta = prev ? ' <span class="muted small">(' + ((ov - overall(prev.vals)) >= 0 ? '+' : '') + Math.round((ov - overall(prev.vals)) * 100) + ' pts)</span>' : '';
+    const ov = avg(w.vals);
+    const d = prev ? (ov - avg(prev.vals)) : null;
+    const delta = d === null ? '' : ' <span class="muted small">(' + (d >= 0 ? '+' : '') + Math.round(d * 100) + ' pts)</span>';
     return '<tr><td class="name">' + fmtDate(w.date) + '</td><td class="' + cls(ov) + '"><b>' + pct(ov) + '</b>' + delta + '</td>' +
-      KEY.map(k => '<td class="' + cls(w.vals[idx(k)]) + '">' + pct(w.vals[idx(k)]) + '</td>').join('') +
-      '<td class="wide">' + esc(w.note || '') + '</td></tr>';
+      KEY.map(k => '<td class="' + cls(w.vals[idx(k)]) + '">' + pct(w.vals[idx(k)]) + '</td>').join('') + '<td class="wide">' + esc(w.note || '') + '</td></tr>';
   }).join('') + '</tbody>';
   document.getElementById('logtable').innerHTML = head + body;
-  const note = document.getElementById('chartnote');
   const chart = document.getElementById('chart');
-  if (WEEKLY.length < 2) {
-    note.textContent = 'The chart appears from the second weekly entry. Until then, the baseline above is the only reading.';
-    chart.innerHTML = '';
-    return;
-  }
-  note.textContent = 'Average of all activities, one point per weekly update.';
+  if (WEEKLY.length < 2) { chart.innerHTML = '<p class="muted small">The chart starts with the second entry.</p>'; return; }
   const W = 640, H = 220, P = 36;
-  const pts = WEEKLY.map((w, i) => {
-    const x = P + (WEEKLY.length === 1 ? 0 : i * (W - 2 * P) / (WEEKLY.length - 1));
-    const y = H - P - overall(w.vals) * (H - 2 * P);
-    return [x, y];
-  });
-  const line = pts.map(p => p.join(',')).join(' ');
+  const pts = WEEKLY.map((w, i) => [P + i * (W - 2 * P) / (WEEKLY.length - 1), H - P - avg(w.vals) * (H - 2 * P)]);
   chart.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Overall progress over time" style="width:100%;height:auto;max-width:640px">' +
-    [0, .5, 1].map(v => '<line x1="' + P + '" x2="' + (W - P) + '" y1="' + (H - P - v * (H - 2 * P)) + '" y2="' + (H - P - v * (H - 2 * P)) + '" stroke="#D5DAE2"/><text x="' + (P - 6) + '" y="' + (H - P - v * (H - 2 * P) + 4) + '" text-anchor="end" font-size="11" fill="#5D6878">' + Math.round(v * 100) + '%</text>').join('') +
-    '<polyline points="' + line + '" fill="none" stroke="#0E4A36" stroke-width="3"/>' +
-    pts.map((p, i) => '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="5" fill="#0E4A36"/><text x="' + p[0] + '" y="' + (H - 10) + '" text-anchor="middle" font-size="11" fill="#5D6878">' + fmtDate(WEEKLY[i].date).replace(/ \d{4}$/, '') + '</text>').join('') +
-    '</svg>';
+    [0, .5, 1].map(v => { const y = H - P - v * (H - 2 * P); return '<line x1="' + P + '" x2="' + (W - P) + '" y1="' + y + '" y2="' + y + '" stroke="#CFE0D6"/><text x="' + (P - 6) + '" y="' + (y + 4) + '" text-anchor="end" font-size="11" fill="#4F6B5D">' + Math.round(v * 100) + '%</text>'; }).join('') +
+    '<polyline points="' + pts.map(p => p.join(',')).join(' ') + '" fill="none" stroke="#0E4A36" stroke-width="3"/>' +
+    pts.map((p, i) => '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="5" fill="#0E4A36"/><text x="' + p[0] + '" y="' + (H - 10) + '" text-anchor="middle" font-size="11" fill="#4F6B5D">' + fmtDate(WEEKLY[i].date).replace(/ \d{4}$/, '') + '</text>').join('') + '</svg>';
 }
 renderLog();
 
-/* ---------- Tabs: one click, deep-linkable with #home, #progress, etc. ---------- */
-const TABS = ['home','progress','rooms','types','log','design','open','imarat'];
-const tabBtns = document.querySelectorAll('nav.tabs button');
-function show(name, push) {
-  if (!TABS.includes(name)) name = 'home';
-  tabBtns.forEach(b => b.setAttribute('aria-selected', b.dataset.tab === name ? 'true' : 'false'));
-  TABS.forEach(t => document.getElementById('p-' + t).hidden = (t !== name));
-  if (push) { try { history.replaceState(null, '', '#' + name); } catch (e) {} }
-  window.scrollTo({ top: 0, behavior: 'auto' });
+/* ---------- daily photos: show entries posted within the last 24 hours ---------- */
+function renderToday() {
+  const now = Date.now();
+  const live = DAILY.filter(p => now - new Date(p.posted).getTime() < 24 * 3600 * 1000);
+  document.getElementById('photos').innerHTML = live.length
+    ? live.map(p => '<figure><img src="' + esc(p.src) + '" alt="' + esc(p.caption) + '" loading="lazy"><figcaption>' + esc(p.caption) + '</figcaption></figure>').join('')
+    : '<p class="muted">No photos posted in the last 24 hours.</p>';
 }
-tabBtns.forEach(b => b.addEventListener('click', () => show(b.dataset.tab, true)));
-document.querySelectorAll('[data-go]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); show(a.dataset.go, true); }));
-window.addEventListener('hashchange', () => show(location.hash.slice(1), false));
-show(location.hash.slice(1) || 'home', false);
+renderToday();
+
+/* ---------- navigation ---------- */
+const PANELS = ['home','today','progress','rooms','log','design','open','imarat'];
+const SUBS = { progress: ['summary','grey','mep','finishing','wood','floors'], rooms: ['room','types'] };
+const SUB_LABEL = { summary:'Combined summary', grey:'Grey works', mep:'MEP works', finishing:'Finishing works', wood:'Woodworks', floors:'All activities by floor', room:'Room by room', types:'Room types' };
+const menuBtns = document.querySelectorAll('nav.menu [data-tab]');
+const dds = { progress: document.getElementById('dd-progress'), rooms: document.getElementById('dd-rooms') };
+function renderSubnav(tab, sub) {
+  const box = document.getElementById('subnav-' + tab);
+  if (!box) return;
+  box.innerHTML = SUBS[tab].map(s => '<button data-sub="' + s + '" aria-current="' + (s === sub) + '">' + SUB_LABEL[s] + '</button>').join('');
+  box.querySelectorAll('button').forEach(b => b.addEventListener('click', () => show(tab, b.dataset.sub, true)));
+}
+function show(tab, sub, push) {
+  if (!PANELS.includes(tab)) tab = 'home';
+  if (SUBS[tab] && !SUBS[tab].includes(sub)) sub = SUBS[tab][0];
+  document.querySelectorAll('.panel').forEach(p => p.hidden = p.dataset.panel !== tab);
+  menuBtns.forEach(b => b.setAttribute('aria-current', (b.dataset.tab === tab && !b.dataset.sub) ? 'page' : 'false'));
+  Object.keys(dds).forEach(k => {
+    const on = k === tab;
+    dds[k].querySelector('.dd-btn').setAttribute('aria-current', on ? 'true' : 'false');
+  });
+  if (SUBS[tab]) {
+    renderSubnav(tab, sub);
+    SUBS[tab].forEach(s => { const el = document.getElementById('sub-' + s); if (el) el.hidden = (s !== sub); });
+    const ddMenu = dds[tab] && dds[tab].querySelectorAll('.dd-menu button');
+    if (ddMenu) ddMenu.forEach(b => b.setAttribute('aria-current', b.dataset.sub === sub ? 'true' : 'false'));
+  }
+  if (push) { try { history.replaceState(null, '', '#' + tab + (sub ? '/' + sub : '')); } catch (e) {} }
+  window.scrollTo({ top: 0, behavior: 'auto' });
+  closeMenus();
+}
+function closeMenus() { Object.values(dds).forEach(d => { d.classList.remove('open'); d.querySelector('.dd-btn').setAttribute('aria-expanded', 'false'); }); }
+Object.values(dds).forEach(d => {
+  const btn = d.querySelector('.dd-btn');
+  btn.addEventListener('click', e => { e.stopPropagation(); const open = !d.classList.contains('open'); closeMenus(); d.classList.toggle('open', open); btn.setAttribute('aria-expanded', String(open)); });
+  d.querySelectorAll('.dd-menu button').forEach(b => b.addEventListener('click', () => show(b.dataset.tab, b.dataset.sub, true)));
+});
+document.addEventListener('click', e => { if (!e.target.closest('.dd')) closeMenus(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenus(); });
+menuBtns.forEach(b => { if (!b.dataset.sub) b.addEventListener('click', () => show(b.dataset.tab, SUBS[b.dataset.tab] ? SUBS[b.dataset.tab][0] : null, true)); });
+window.addEventListener('hashchange', () => parseHash());
+function parseHash() {
+  const [tab, sub] = (location.hash.slice(1) || 'home').split('/');
+  show(tab, sub || (SUBS[tab] ? SUBS[tab][0] : null), false);
+}
+parseHash();
 </script>
 <script>
 if ("serviceWorker" in navigator) { window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {})); }
