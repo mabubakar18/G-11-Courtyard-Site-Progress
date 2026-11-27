@@ -35,6 +35,7 @@ p{margin:0 0 10px;max-width:70ch}
 .asof{background:var(--gold);color:#1B1406;border-radius:16px;padding:12px 16px;min-width:150px;box-shadow:0 10px 22px -12px rgba(0,0,0,.45)}
 .asof .k{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#3A2A08;font-weight:600}
 .asof .v{font-family:var(--display);font-weight:700;font-size:21px;margin-top:2px}
+.asof .as-time{font-size:12.5px;margin-top:3px;color:#3A2A08}
 
 /* ---- bottom dock (all screens) ---- */
 .dock{position:fixed;left:50%;transform:translateX(-50%);bottom:max(12px,env(safe-area-inset-bottom,0px));z-index:50;width:min(560px,calc(100vw - 28px));
@@ -287,7 +288,7 @@ td.sec,th.sec{border-left:3px solid var(--green)!important}
     <h1>G-11 Courtyard by Marriott</h1>
     <div class="sub">Hotel project · G-11 Markaz, Islamabad</div>
   </div>
-  <div class="asof"><div class="k">Progress as of</div><div class="v" id="asof">26 Nov 2026</div></div>
+  <div class="asof"><div class="k">Progress as of</div><div class="v" id="asof">26 Nov 2026</div><div class="as-time" id="asof-time"></div></div>
 </header>
 
 <!-- HOME -->
@@ -852,6 +853,15 @@ document.getElementById('cal-prev').addEventListener('click', () => { calMonth =
 document.getElementById('cal-next').addEventListener('click', () => { calMonth = shiftMonth(calMonth, 1); renderCalendar(); });
 document.getElementById('cal-grid').addEventListener('click', e => { const b = e.target.closest('.cal-day.open'); if (!b) return; calSel = b.dataset.day; renderCalendar(); renderDay(); });
 renderCalendar(); renderDay();
+/* Header: the latest published day, with its update time underneath. */
+function setAsOf() {
+  const keys = Object.keys(PROGRESS_DAYS).sort();
+  const last = keys[keys.length - 1];
+  const rec = PROGRESS_DAYS[last];
+  document.getElementById('asof').textContent = fmtDate(last);
+  document.getElementById('asof-time').textContent = rec.updated ? 'Updated ' + dayStamp(rec.updated) + ' (Pakistan time)' : (rec.note || 'Workbook figures');
+}
+setAsOf();
 
 function renderLog() {
   const head = '<thead><tr><th class="name">Date</th><th>Overall</th>' + KEY.map(k => '<th>' + esc(k) + '</th>').join('') + '<th class="wide">Note</th></tr></thead>';
@@ -989,7 +999,7 @@ function setupEntry(db) {
     try {
       await db.collection('progress').doc(key).set(next);
       meta = { status: next.status, updated: now, publishedAt: next.publishedAt };
-      if (publish) { PROGRESS_DAYS[key] = { note: '', updated: now, publishedAt: now, rows, elev: elevs }; renderCalendar(); renderDay(); }
+      if (publish) { PROGRESS_DAYS[key] = { note: '', updated: now, publishedAt: now, rows, elev: elevs }; renderCalendar(); renderDay(); setAsOf(); }
       paintStatus();
       msg.textContent = publish ? 'Published. The website will show it after the next update.' : 'Draft saved at ' + stamp(now) + '.';
     } catch (e) {
@@ -1074,7 +1084,7 @@ function setupEntry(db) {
   /* Published days from the database join the calendar on this page. */
   db.collection('progress').get().then(s => {
     s.docs.forEach(d => { const r = d.data() || {}; if (r.status === 'published' && r.rows) PROGRESS_DAYS[d.id] = { note: '', updated: r.updated, publishedAt: r.publishedAt, rows: r.rows, elev: r.elev || null }; });
-    renderCalendar(); renderDay();
+    renderCalendar(); renderDay(); setAsOf();
   }).catch(() => {});
 }
 
