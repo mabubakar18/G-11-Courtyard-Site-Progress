@@ -163,7 +163,8 @@ td.rangecell{text-align:left;white-space:normal;min-width:220px}
 .refresh-fab{position:fixed;z-index:50;top:calc(env(safe-area-inset-top,0px) + 10px);right:max(12px, env(safe-area-inset-right,0px));width:40px;height:40px;border-radius:50%;border:1px solid #C9DCD1;background:rgba(255,255,255,.92);color:#0E4A36;display:grid;place-items:center;cursor:pointer;padding:0;box-shadow:0 6px 16px -8px rgba(14,74,54,.6)}
 .refresh-fab.spin svg{animation:spin .7s linear}
 @keyframes spin{to{transform:rotate(360deg)}}
-.entry{margin-top:16px}
+.entry{margin-top:16px;overflow-anchor:none}
+.entry *{overflow-anchor:none}
 .entry-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
 .entry-bar input[type=date],#e-item{font:inherit;padding:9px 12px;border:1px solid #C9DCD1;border-radius:12px;background:#fff;color:inherit}
 #e-item,#e-elev-item{width:100%;margin-bottom:10px;font:inherit;padding:9px 12px;border:1px solid #C9DCD1;border-radius:12px;background:#fff;color:inherit}
@@ -1048,14 +1049,26 @@ function setupEntry(db) {
     if (tg.kind === 'room') return roomVal(tg.room, tg.key);
     return elevValue({ elev: elevs }, tg.key, tg.level, tg.side);
   }
-  function openPad(tg, title) {
+  /* The entry box opens directly under the tapped row, so the page does not jump to the top. */
+  const padHome = padEl.parentElement;
+  let openY = null;
+  function openPad(tg, title, row) {
     target = tg;
     const cur = curOf(tg);
     document.getElementById('e-pad-title').textContent = title;
     padIn.value = (cur === null || cur === undefined) ? '' : String(Math.round(cur * 100));
     padErr.textContent = '';
+    openY = window.scrollY;
+    if (row) row.after(padEl);
     padEl.hidden = false;
-    padIn.focus();
+    padIn.focus({ preventScroll: true });
+    padEl.scrollIntoView({ block: 'nearest' });
+  }
+  function closePad() {
+    padEl.hidden = true;
+    padHome.insertBefore(padEl, document.getElementById('e-rooms'));
+    target = null;
+    if (openY !== null) { window.scrollTo({ top: openY, behavior: 'instant' }); openY = null; }
   }
   function parsePct(s) {
     const x = String(s).trim();
@@ -1090,26 +1103,26 @@ function setupEntry(db) {
       elevs[target.key][target.level][target.side] = res.v;
     }
     meta.status = meta.status === 'published' ? 'draft' : meta.status;
-    padEl.hidden = true; target = null;
+    closePad();
     paintRooms(); paintStatus();
     msg.textContent = 'Not saved yet. Tap Save draft.';
   });
   padIn.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('e-pad-set').click(); });
-  document.getElementById('e-pad-close').addEventListener('click', () => { padEl.hidden = true; });
+  document.getElementById('e-pad-close').addEventListener('click', closePad);
   roomsEl.addEventListener('click', e => {
     const b = e.target.closest('.e-cell'); if (!b || b.disabled) return;
     if (b.dataset.kind === 'room') {
       const room = b.dataset.room, key = itemSel.value;
       const label = itemSel.options[itemSel.selectedIndex].textContent;
-      openPad({ kind: 'room', room, key }, room + ' · ' + label);
+      openPad({ kind: 'room', room, key }, room + ' · ' + label, b.closest('.e-row'));
     } else {
       const key = b.dataset.elev, side = +b.dataset.side, it = elevItem(key);
-      openPad({ kind: 'elev', key, level, side }, level + ' · ' + it.label + ' · ' + it.sides[side]);
+      openPad({ kind: 'elev', key, level, side }, level + ' · ' + it.label + ' · ' + it.sides[side], b.closest('.e-row'));
     }
   });
   document.querySelector('.seg').addEventListener('click', e => {
     const b = e.target.closest('.seg-b'); if (!b) return;
-    mode = b.dataset.mode; padEl.hidden = true; paintMode(); paintRooms();
+    mode = b.dataset.mode; closePad(); paintMode(); paintRooms();
   });
   floorsEl.addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; floor = b.dataset.floor; paintFloors(); paintRooms(); });
   levelsEl.addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; level = b.dataset.level; paintLevels(); paintRooms(); });
