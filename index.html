@@ -1062,7 +1062,7 @@ function setupEntry(db) {
     if (row) row.after(padEl);
     padEl.hidden = false;
     padIn.focus({ preventScroll: true });
-    padEl.scrollIntoView({ block: 'nearest' });
+    padEl.scrollIntoView({ block: 'center' });
   }
   function closePad() {
     padEl.hidden = true;
@@ -1103,9 +1103,10 @@ function setupEntry(db) {
       elevs[target.key][target.level][target.side] = res.v;
     }
     meta.status = meta.status === 'published' ? 'draft' : meta.status;
+    const label = target.kind === 'room' ? target.room : target.level;
     closePad();
     paintRooms(); paintStatus();
-    msg.textContent = 'Not saved yet. Tap Save draft.';
+    msg.textContent = label + ' set to ' + Math.round(res.v * 100) + '%. Not saved yet. Tap Save draft.';
   });
   padIn.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('e-pad-set').click(); });
   document.getElementById('e-pad-close').addEventListener('click', closePad);
