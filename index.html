@@ -356,6 +356,7 @@ td.sec,th.sec{border-left:3px solid var(--green)!important}
 .dl-rm{flex:0 0 auto;width:auto;height:26px;padding:0 9px;margin:0 0 0 2px;white-space:nowrap;border:1px solid #E4B8B0;background:none;color:#8A2B1E;border-radius:999px;font:inherit;font-size:12px;cursor:pointer}
 .dl-add{display:flex;gap:6px;align-items:center;margin-top:10px}
 .dl-add input{flex:1;min-width:0;font:inherit;font-size:13px;padding:7px 9px;border:1px solid var(--line);border-radius:8px}
+.dl-in,.dl-add input{background:#fff;color:#13241D;color-scheme:light}
 .dl-add .btn{width:auto;min-height:0;margin:0;padding:7px 14px;font-size:13px;border-radius:8px;flex:0 0 auto}
 .dl-msg{font-size:12px;margin:6px 0 0;min-height:1em}
 </style>
@@ -1057,6 +1058,7 @@ async function setupUploads() {
   CAN_EDIT = true;
   DELAY_DB = db;
   db.collection('delays').onSnapshot(snap => {
+    if (dlPending > 0) return;
     const d = snap.docs.find(x => x.id === 'current');
     const items = d && d.data() && d.data().items;
     if (Array.isArray(items)) DELAYS = items;
@@ -1264,13 +1266,15 @@ function renderDelays() {
   else if (!CAN_EDIT) msg.textContent = 'View only. Open the private page to add, edit or remove delays.';
   else if (!msg.dataset.keep) msg.textContent = '';
 }
+let dlPending = 0;
 function saveDelays(msgText) {
   const msg = document.getElementById('dl-msg');
   if (!DELAY_DB) return;
   msg.textContent = 'Saving…';
+  dlPending++;
   DELAY_DB.collection('delays').doc('current').set({ items: DELAYS.filter(x => x && x.trim()), updated: new Date().toISOString() })
-    .then(() => { msg.textContent = msgText || 'Saved.'; })
-    .catch(() => { msg.textContent = 'Could not save this change. Check your connection and try again.'; });
+    .then(() => { dlPending--; msg.textContent = msgText || 'Saved.'; })
+    .catch(() => { dlPending--; msg.textContent = 'Could not save this change. Check your connection and try again.'; });
 }
 let dlTimer = null;
 function queueDelaySave(i, value) {
