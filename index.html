@@ -487,6 +487,7 @@ td.sec,th.sec{border-left:3px solid var(--green)!important}
     <div class="banner" style="--img:url('hero.jpg')"></div>
     <div class="tabset c-glance" id="tabset-rooms"><div class="tabbar" id="chips-rooms" role="tablist"></div></div>
     <div id="sub-room" class="sub">
+      <h2>Guest rooms</h2>
       <div class="controls">
         <label>Floor <select id="fFloor"></select></label>
         <label>Room number <input id="fSearch" type="search" placeholder="e.g. 415" inputmode="numeric"></label>
@@ -593,7 +594,7 @@ td.sec,th.sec{border-left:3px solid var(--green)!important}
   <button data-go="home" aria-label="Home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Home</button>
   <button data-go="today" aria-label="Today"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="3"/><circle cx="12" cy="13" r="3.5"/><path d="M8.5 6l1.5-2h4l1.5 2"/></svg>Today</button>
   <button data-menu="progress" aria-label="Progress"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Progress</button>
-  <button data-menu="rooms" aria-label="Rooms"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>Rooms</button>
+  <button data-go="rooms" aria-label="Guest rooms"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>Guest rooms</button>
   <button data-menu="more" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>More</button>
 </nav>
 
@@ -625,14 +626,9 @@ td.sec,th.sec{border-left:3px solid var(--green)!important}
     <button class="item" data-tab="progress" data-sub="floors">All activities by floor</button></div>
 </div>
 
-<div class="sheet" id="sheet-rooms" role="dialog" aria-label="Rooms">
-  <div class="grab"></div><h3>Rooms</h3>
-  <button class="item" data-tab="rooms" data-sub="room">Room by room</button>
-  <button class="item" data-tab="rooms" data-sub="types">Room types</button>
-</div>
-
 <div class="sheet" id="sheet-more" role="dialog" aria-label="More">
   <div class="grab"></div><h3>More</h3>
+  <button class="item" data-tab="rooms" data-sub="types">Room types</button>
   <button class="item" data-tab="log">Weekly log</button>
   <button class="item" data-tab="design">Design renders</button>
   <button class="item" data-tab="open">Open points</button>
@@ -791,6 +787,7 @@ function elevTable(key, title, heads) {
   return '<div class="scroll" style="margin-top:14px"><table><thead><tr class="trade"><th class="name" rowspan="2">' + esc(title) + '</th><th colspan="' + n + '">' + esc(it.label) + '</th><th rowspan="2">Level avg</th></tr><tr class="items">' + heads.map(h => '<th>' + esc(h) + '</th>').join('') + '</tr></thead><tbody>' + body + '</tbody></table></div>';
 }
 const CORR_FLOOR_ORDER = ['Lower ground floor','Ground floor','Mezzanine floor','1st floor','2nd floor','3rd floor','4th floor','5th floor','6th floor','7th floor','8th floor','9th floor','Roof'];
+const CORR_FLOORS = ['3rd floor','4th floor','5th floor','6th floor','7th floor','8th floor'];
 function corridorView() {
   const rec = latestRec();
   const corr = rec && rec.corr;
@@ -798,11 +795,11 @@ function corridorView() {
   if (!corr || !Object.keys(corr).length) {
     body = '<p class="muted">No corridor figures recorded for this date.</p>';
   } else {
-    const floors = Object.keys(corr).sort((a, b) => CORR_FLOOR_ORDER.indexOf(a) - CORR_FLOOR_ORDER.indexOf(b));
+    const floors = Object.keys(corr).filter(f => CORR_FLOORS.includes(f)).sort((a, b) => CORR_FLOOR_ORDER.indexOf(a) - CORR_FLOOR_ORDER.indexOf(b));
     const rows = floors.map(f => corr[f].map((c, i) => '<tr><td class="name">' + (i === 0 ? esc(f) : '') + '</td><td>' + esc(i === 0 && corr[f].length === 4 ? 'Corridor ' + (i + 1) : (corr[f].length === 4 ? 'Corridor ' + (i + 1) : c[0])) + '</td>' + gmv(typeof c[1] === 'number' ? c[1] : 'NA') + '</tr>').join('')).join('');
     body = '<div class="scroll"><table><thead><tr><th class="name">Floor</th><th>Corridor or passage</th><th>Progress</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
   }
-  return '<div class="card" style="margin-top:14px"><h2>Corridors by floor</h2>' + body + '</div>';
+  return '<div class="card" style="margin-top:14px"><h2>Corridors, 3rd to 8th floor</h2>' + body + '</div>';
 }
 function gmv(v) { return v === 'NA' ? '<td class="na">NA</td>' : '<td class="' + cls(v) + '">' + pct(v) + '</td>'; }
 function plasterView() {
@@ -865,7 +862,9 @@ FLOOR_ORDER.forEach(f => {
   });
   totals.all += rs.length;
 });
-document.getElementById('types').innerHTML = '<thead><tr><th class="name">Floor</th><th class="wide">Type</th><th>Qty</th><th class="rangecell">Room numbers</th></tr></thead><tbody>' + typeRows + '<tr class="total"><td class="name">ALL</td><td class="wide">Total</td><td>' + totals.all + '</td><td class="rangecell">' + TYPES.map(t => t + ' ' + totals[t]).join(' · ') + '</td></tr></tbody>';
+let typeTotals = '<tr class="total"><td class="name">All floors</td><td class="wide">All guest rooms</td><td>' + totals.all + '</td><td class="rangecell"></td></tr>';
+TYPES.forEach(ty => { typeTotals += '<tr class="total"><td class="name">Total</td><td class="wide">' + ty + '</td><td>' + totals[ty] + '</td><td class="rangecell"></td></tr>'; });
+document.getElementById('types').innerHTML = '<thead><tr><th class="name">Floor</th><th class="wide">Type</th><th>Qty</th><th class="rangecell">Room numbers</th></tr></thead><tbody>' + typeRows + typeTotals + '</tbody>';
 
 /* ---------- Weekly log ---------- */
 const KEY = ['Block work','Plaster','Floor screed','Fire safety','Plumbing','Mechanical (HVAC)','Electrical','Painting','Doors'];
@@ -1139,6 +1138,7 @@ function openMenu(name) {
 scrim.addEventListener('click', closeSheet);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
 function renderChips(tab, sub) {
+  if (tab === 'rooms') { document.getElementById('tabset-rooms').hidden = true; return; }
   if (tab === 'progress') {
     const cl = CLUSTERS.find(c => c.subs.includes(sub)) || CLUSTERS[0];
     const box = document.getElementById('chips-progress'), box2 = document.getElementById('chips2-progress');
