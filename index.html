@@ -1247,10 +1247,17 @@ const GL_COURT = [
   { title: 'Plaster', key: 'court_plaster', sub: 'plaster' },
   { title: 'Gutka', key: 'court_gutka', sub: 'gutka' }
 ];
+/* Corridors are shown on the private page only (the public site leaves them out). */
+const SHOW_CORRIDORS = false;
+function corridorAvg() {
+  const all = corrFloors().reduce((a, d) => a.concat(d.items), []);
+  return avgNum(all.map(c => c.paneling).concat(all.map(c => c.screed)));
+}
 const GL_WORKS = [
   { title: 'Grey structure', sub: 'grey', heads: [0, 1, 2, 3, 4], kids: [
       { title: 'Internal plaster', sub: 'grey', head: 3 },
-      { title: 'Staircases', sub: 'plaster', stairs: true }
+      { title: 'Staircases', sub: 'plaster', stairs: true },
+      { title: 'Corridors', sub: 'rooms', corridors: true }
   ] },
   { title: 'MEP', sub: 'fire', heads: [6, 7, 8, 9] },
   { title: 'Finishing', sub: 'finishing', heads: [10, 11, 12, 13, 14] },
@@ -1279,7 +1286,9 @@ function renderSummary() {
   const workRows = GL_WORKS.map(t => {
     const g = groupAvg(t.heads);
     let kids = '';
-    if (t.kids) kids = t.kids.map(k => glRow('#progress/' + k.sub, k.title, k.stairs ? stairAvg : headAvg(k.head), true)).join('');
+    if (t.kids) kids = t.kids.filter(k => !k.corridors || SHOW_CORRIDORS).map(k => k.corridors
+      ? glRow('#rooms', k.title, corridorAvg(), true)
+      : glRow('#progress/' + k.sub, k.title, k.stairs ? stairAvg : headAvg(k.head), true)).join('');
     return glRow('#progress/' + t.sub, t.title, g) + kids;
   }).join('');
   document.getElementById('hs-grid').innerHTML =
