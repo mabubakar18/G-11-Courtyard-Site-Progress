@@ -363,10 +363,9 @@ td.sec,th.sec{border-left:3px solid var(--green)!important}
 .dl-msg{font-size:12px;margin:6px 0 0;min-height:1em}
 </style>
 <style>
-body.public .dock,body.public .fab,body.public .refresh-fab,body.public .fab-stack .fab{display:none!important}
-body.public .panel:not([data-panel="home"]){display:none!important}
-body.public .gl-head,body.public .gl-list a{pointer-events:none;cursor:default}
-body.public .dl-fab{position:fixed}
+body.public .panel[data-panel="rooms"],body.public .panel[data-panel="open"]{display:none!important}
+body.public .dock button[data-go="rooms"],body.public .sheet .item[data-tab="rooms"],body.public .sheet .item[data-tab="open"]{display:none!important}
+body.public .refresh-fab{display:none!important}
 </style>
 </head>
 <body class="public">
@@ -1228,7 +1227,7 @@ document.querySelectorAll('.dock [data-menu]').forEach(b => b.addEventListener('
 document.querySelectorAll('.sheet .item[data-tab]').forEach(b => b.addEventListener('click', () => show(b.dataset.tab, b.dataset.sub || null, true)));
 document.getElementById('fab').addEventListener('click', () => openMenu('qa'));
 window.addEventListener('hashchange', parseHash);
-function parseHash() { if (document.body.classList.contains('public')) { show('home', null, false); return; }
+function parseHash() { if (document.body.classList.contains('public') && /^#(rooms|open)/.test(location.hash)) { show('home', null, false); return; }
   const [tab, sub] = (location.hash.slice(1) || 'home').split('/');
   show(tab, sub || (SUBS[tab] ? SUBS[tab][0] : null), false);
 }
