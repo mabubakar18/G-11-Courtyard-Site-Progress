@@ -14408,8 +14408,10 @@ function parseHash() {
 }
 
 /* ---------- Home: progress summary and critical delays ---------- */
-const DELAYS_STATIC = []
-;
+const DELAYS_STATIC = [
+ "Drawings Pending.",
+ "MEP Drawings pending!"
+];
 const GL_EXT = [
   { title: 'Plaster', key: 'plaster', sub: 'plaster' },
   { title: 'Gutka', key: 'gutka', sub: 'gutka' },
@@ -14485,6 +14487,7 @@ function dlRender() {
   document.getElementById('dl-add').hidden = !DL.editable;
   if (!DL.loaded) dlStatus('Loading…');
   else if (!DL.editable) dlStatus('View only. Open the private page to add, edit or remove delays.');
+  else if (document.getElementById('dl-msg').textContent === 'Loading…') dlStatus('');
 }
 async function dlWrite(okText) {
   if (!DL.db) return;
