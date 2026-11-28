@@ -1396,8 +1396,8 @@ dlRender();
 setTimeout(() => { if (!DL.db) { DL.loaded = true; dlRender(); } }, 1500);
 document.getElementById('sub-gutka').innerHTML = gutkaView();
 document.getElementById('sub-plaster').innerHTML = plasterView();
-document.getElementById('sub-grey').insertAdjacentHTML('beforeend', corridorSummary());
-document.getElementById('sub-room').insertAdjacentHTML('beforeend', '<div class="card" id="corridors" style="margin-top:14px"><h2>Corridors, 3rd to 8th floor</h2><p class="muted small">Each corridor is named by its elevation and compass direction. Figures come from the Corridors sheet of the workbook.</p>' + corridorTable() + '</div>');
+if (SHOW_CORRIDORS) document.getElementById('sub-grey').insertAdjacentHTML('beforeend', corridorSummary());
+if (SHOW_CORRIDORS) document.getElementById('sub-room').insertAdjacentHTML('beforeend', '<div class="card" id="corridors" style="margin-top:14px"><h2>Corridors, 3rd to 8th floor</h2><p class="muted small"> </p>' + corridorTable() + '</div>');
 const LAUNCHED_STANDALONE = window.navigator.standalone === true || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
 if (LAUNCHED_STANDALONE) {
   try { history.replaceState(null, '', location.pathname + location.search); } catch (err) {}
