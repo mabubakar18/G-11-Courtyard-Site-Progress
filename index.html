@@ -827,11 +827,10 @@ function corridorTable() {
     d.items.forEach((c, i) => {
       rows += '<tr>' + (i === 0 ? '<td class="name" rowspan="' + (d.items.length + 1) + '">' + esc(d.floor) + '</td>' : '') +
         '<td class="wide">' + esc(CORR_NAME[c.side] || c.side) + '</td>' +
-        '<td class="na" title="Conduit progress is recorded for the whole building, not per corridor">–</td>' +
-        corrCell(c.paneling) + corrCell(c.screed) + '</tr>';
+        corrCell(c.conduit) + corrCell(c.paneling) + corrCell(c.screed) + '</tr>';
     });
-    rows += '<tr class="total"><td class="wide">Floor average</td><td class="na">–</td>' +
-      corrCell(avgNum(d.items.map(c => c.paneling))) + corrCell(avgNum(d.items.map(c => c.screed))) + '</tr>';
+    rows += '<tr class="total"><td class="wide">Floor average</td>' +
+      corrCell(avgNum(d.items.map(c => c.conduit))) + corrCell(avgNum(d.items.map(c => c.paneling))) + corrCell(avgNum(d.items.map(c => c.screed))) + '</tr>';
   });
   return '<div class="scroll"><table><thead><tr><th class="name">Floor</th><th class="wide">Corridor</th><th>Conduiting</th><th>Paneling</th><th>Screed</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
 }
@@ -839,10 +838,10 @@ function corridorSummary() {
   const data = corrFloors().filter(d => d.items.length);
   if (!data.length) return '';
   const rows = data.map(d => '<tr><td class="name">' + esc(d.floor) + '</td>' +
-    corrCell(avgNum(d.items.map(c => c.paneling))) + corrCell(avgNum(d.items.map(c => c.screed))) + '</tr>').join('');
+    corrCell(avgNum(d.items.map(c => c.conduit))) + corrCell(avgNum(d.items.map(c => c.paneling))) + corrCell(avgNum(d.items.map(c => c.screed))) + '</tr>').join('');
   return '<div class="card" id="grey-corridors" style="margin-top:14px"><h2>Corridors, 3rd to 8th floor</h2>' +
     '<p class="muted small">Average of the four corridors on each floor.</p>' +
-    '<div class="scroll"><table><thead><tr><th class="name">Floor</th><th>Paneling</th><th>Screed</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+    '<div class="scroll"><table><thead><tr><th class="name">Floor</th><th>Conduiting</th><th>Paneling</th><th>Screed</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
     '<p style="margin-top:10px"><a href="#rooms" style="color:var(--green-2);font-weight:700">Open corridor detail in Guest rooms →</a></p></div>';
 }
 function gmv(v) { return v === 'NA' ? '<td class="na">NA</td>' : '<td class="' + cls(v) + '">' + pct(v) + '</td>'; }
@@ -1389,7 +1388,7 @@ setTimeout(() => { if (!DL.db) { DL.loaded = true; dlRender(); } }, 1500);
 document.getElementById('sub-gutka').innerHTML = gutkaView();
 document.getElementById('sub-plaster').innerHTML = plasterView();
 document.getElementById('sub-grey').insertAdjacentHTML('beforeend', corridorSummary());
-document.getElementById('sub-room').insertAdjacentHTML('beforeend', '<div class="card" id="corridors" style="margin-top:14px"><h2>Corridors, 3rd to 8th floor</h2><p class="muted small"></p>' + corridorTable() + '</div>');
+document.getElementById('sub-room').insertAdjacentHTML('beforeend', '<div class="card" id="corridors" style="margin-top:14px"><h2>Corridors, 3rd to 8th floor</h2><p class="muted small">Each corridor is named by its elevation and compass direction. Figures come from the Corridors sheet of the workbook.</p>' + corridorTable() + '</div>');
 const LAUNCHED_STANDALONE = window.navigator.standalone === true || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
 if (LAUNCHED_STANDALONE) {
   try { history.replaceState(null, '', location.pathname + location.search); } catch (err) {}
