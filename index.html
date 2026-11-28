@@ -1056,17 +1056,7 @@ async function setupUploads() {
   const caption = document.getElementById('upload-caption');
   box.hidden = false;
   CAN_EDIT = true;
-  DELAY_DB = db;
-  db.collection('delays').onSnapshot(snap => {
-    if (dlPending > 0) return;
-    const d = snap.docs.find(x => x.id === 'current');
-    const at = d && d.data() && d.data().updated;
-    if (at && dlLastSaved && at < dlLastSaved) return;
-    const items = d && d.data() && d.data().items;
-    if (Array.isArray(items)) DELAYS = items;
-    renderDelays();
-  }, () => {});
-  renderDelays();
+  dlAttach(db);
   document.getElementById('photos').addEventListener('click', async e => {
     const btn = e.target.closest('.rm');
     if (!btn) return;
@@ -1203,8 +1193,6 @@ function parseHash() {
 /* ---------- Home: progress summary and critical delays ---------- */
 const DELAYS_STATIC = []
 ;
-let DELAYS = DELAYS_STATIC.slice();
-let DELAY_DB = null;
 const GL_EXT = [
   { title: 'Plaster', key: 'plaster', sub: 'plaster' },
   { title: 'Gutka', key: 'gutka', sub: 'gutka' },
@@ -1254,61 +1242,92 @@ function renderSummary() {
     glSection('#progress/plaster', 'Courtyard finishes', courtRows, avgOf(courtVals)) +
     glSection('#progress/grey', 'Structure and services', workRows, avgOf(GL_WORKS.map(t => groupAvg(t.heads))));
 }
-function renderDelays() {
-  document.getElementById('dl-count').textContent = DELAYS.filter(x => x && x.trim()).length;
+
+/* ---- Critical delays ----
+   One document (delays/current) holds the list. Every change writes the whole list and the popup
+   shows the result. The database copy is taken once, when the page connects; later copies are not
+   applied, so a late copy can never bring back a row that was removed. */
+const DL = { items: DELAYS_STATIC.slice(), editable: false, db: null, loaded: false, saving: 0 };
+function dlStatus(text, bad) {
+  const m = document.getElementById('dl-msg');
+  m.textContent = text;
+  m.style.color = bad ? '#8A2B1E' : '';
+}
+function dlRender() {
+  document.getElementById('dl-count').textContent = DL.items.length;
   const ul = document.getElementById('dl-list');
-  ul.innerHTML = DELAYS.length
-    ? DELAYS.map((t, i) => CAN_EDIT
-        ? '<li><input type="text" class="dl-in" data-i="' + i + '" maxlength="200" value="' + esc(t) + '" aria-label="Delay ' + (i + 1) + '"><button type="button" class="dl-rm" data-i="' + i + '" aria-label="Remove delay ' + (i + 1) + '">×</button></li>'
-        : '<li>' + esc(t) + '</li>').join('')
-    : '<li class="muted">No critical delays recorded.</li>';
-  document.getElementById('dl-add').hidden = !CAN_EDIT;
-  const msg = document.getElementById('dl-msg');
-  if (CAN_EDIT === null) msg.textContent = 'Loading…';
-  else if (!CAN_EDIT) msg.textContent = 'View only. Open the private page to add, edit or remove delays.';
-  else if (!msg.dataset.keep) msg.textContent = '';
+  if (!DL.items.length) {
+    ul.innerHTML = '<li class="muted">No critical delays recorded.</li>';
+  } else if (DL.editable) {
+    ul.innerHTML = DL.items.map((t, i) =>
+      '<li><input type="text" class="dl-in" data-i="' + i + '" maxlength="200" value="' + esc(t) + '" aria-label="Delay ' + (i + 1) + '">' +
+      '<button type="button" class="dl-rm" data-i="' + i + '" aria-label="Remove delay ' + (i + 1) + '">Remove</button></li>').join('');
+  } else {
+    ul.innerHTML = DL.items.map(t => '<li>' + esc(t) + '</li>').join('');
+  }
+  document.getElementById('dl-add').hidden = !DL.editable;
+  if (!DL.loaded) dlStatus('Loading…');
+  else if (!DL.editable) dlStatus('View only. Open the private page to add, edit or remove delays.');
 }
-let dlPending = 0, dlLastSaved = '';
-function saveDelays(msgText) {
-  const msg = document.getElementById('dl-msg');
-  if (!DELAY_DB) return;
-  msg.textContent = 'Saving…';
-  dlPending++;
-  const stamp = new Date().toISOString();
-  dlLastSaved = stamp;
-  DELAY_DB.collection('delays').doc('current').set({ items: DELAYS.filter(x => x && x.trim()), updated: stamp })
-    .then(() => { dlPending--; msg.textContent = msgText || 'Saved.'; })
-    .catch(() => { dlPending--; msg.textContent = 'Could not save this change. Check your connection and try again.'; });
+async function dlWrite(okText) {
+  if (!DL.db) return;
+  const items = DL.items.map(s => s.trim()).filter(Boolean);
+  DL.saving++;
+  dlStatus('Saving…');
+  try {
+    await DL.db.collection('delays').doc('current').set({ items: items, updated: new Date().toISOString() });
+    dlStatus(okText);
+  } catch (err) {
+    dlStatus('Not saved (' + ((err && (err.message || err.code)) || 'unknown error') + '). Please try again.', true);
+  } finally {
+    DL.saving--;
+  }
 }
-let dlTimer = null;
-function queueDelaySave(i, value) {
-  DELAYS[i] = value.trim();
-  clearTimeout(dlTimer);
-  dlTimer = setTimeout(() => saveDelays('Delay updated.'), 600);
+function dlAttach(db) {
+  DL.db = db;
+  DL.editable = true;
+  let first = true;
+  const done = () => { DL.loaded = true; dlRender(); };
+  setTimeout(() => { if (!DL.loaded) { dlStatus('Could not load the delays. Reload the page.', true); DL.loaded = true; } }, 8000);
+  db.collection('delays').onSnapshot(snap => {
+    if (!first) return;
+    first = false;
+    const d = snap.docs.find(x => x.id === 'current');
+    const data = d && d.data && d.data();
+    if (data && Array.isArray(data.items)) DL.items = data.items.slice();
+    done();
+  }, err => {
+    dlStatus('Could not load the delays: ' + ((err && err.message) || 'unknown error'), true);
+    DL.loaded = true;
+  });
+  dlRender();
 }
-document.getElementById('dl-list').addEventListener('input', e => {
-  const inp = e.target.closest('.dl-in'); if (!inp) return;
-  queueDelaySave(+inp.dataset.i, inp.value);
+const dlList = document.getElementById('dl-list');
+dlList.addEventListener('click', e => {
+  const b = e.target.closest('.dl-rm');
+  if (!b || !DL.editable) return;
+  DL.items.splice(+b.dataset.i, 1);
+  dlRender();
+  dlWrite('Delay removed.');
 });
-document.getElementById('dl-list').addEventListener('change', e => {
-  const inp = e.target.closest('.dl-in'); if (!inp) return;
-  clearTimeout(dlTimer);
-  queueDelaySave(+inp.dataset.i, inp.value);
-  saveDelays('Delay updated.');
-});
-document.getElementById('dl-list').addEventListener('click', e => {
-  const b = e.target.closest('.dl-rm'); if (!b) return;
-  DELAYS.splice(+b.dataset.i, 1);
-  renderDelays();
-  saveDelays('Delay removed.');
+dlList.addEventListener('change', e => {
+  const inp = e.target.closest('.dl-in');
+  if (!inp || !DL.editable) return;
+  const i = +inp.dataset.i;
+  const v = inp.value.trim();
+  if (!v) { DL.items.splice(i, 1); dlRender(); dlWrite('Delay removed.'); return; }
+  DL.items[i] = v;
+  dlWrite('Delay updated.');
 });
 document.getElementById('dl-add').addEventListener('submit', e => {
   e.preventDefault();
   const inp = document.getElementById('dl-in');
-  const t = inp.value.trim(); if (!t) return;
-  DELAYS.push(t); inp.value = '';
-  renderDelays();
-  saveDelays('Delay added.');
+  const t = inp.value.trim();
+  if (!t) return;
+  DL.items.push(t);
+  inp.value = '';
+  dlRender();
+  dlWrite('Delay added.');
 });
 const dlSheet = document.getElementById('dl-sheet');
 function openDelays() { dlSheet.hidden = false; document.getElementById('dl-close').focus(); }
@@ -1318,7 +1337,8 @@ document.getElementById('dl-close').addEventListener('click', closeDelays);
 dlSheet.addEventListener('click', e => { if (e.target === dlSheet) closeDelays(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !dlSheet.hidden) closeDelays(); });
 renderSummary();
-renderDelays();
+dlRender();
+setTimeout(() => { if (!DL.db) { DL.loaded = true; dlRender(); } }, 1500);
 document.getElementById('sub-gutka').innerHTML = gutkaView();
 document.getElementById('sub-plaster').innerHTML = plasterView();
 document.getElementById('sub-grey').insertAdjacentHTML('beforeend', corridorView());
