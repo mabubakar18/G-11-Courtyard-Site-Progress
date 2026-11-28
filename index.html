@@ -932,7 +932,12 @@ function elevValue(rec, key, level, side) {
 }
 /* ---------- Daily record calendar ---------- */
 const DAY_TZ = 'Asia/Karachi';
-const dayStamp = iso => iso ? new Date(iso).toLocaleString('en-GB', { timeZone: DAY_TZ, day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }) : '';
+const dayStamp = iso => {
+  if (!iso) return '';
+  const parts = new Intl.DateTimeFormat('en-GB', { timeZone: DAY_TZ, day: '2-digit', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }).formatToParts(new Date(iso));
+  const g = t => (parts.find(x => x.type === t) || {}).value || '';
+  return g('day') + ' ' + g('month') + ' ' + g('year') + ', ' + g('hour') + ':' + g('minute') + ' ' + g('dayPeriod').toUpperCase();
+};
 const dayKeys = Object.keys(PROGRESS_DAYS).sort();
 let calMonth = dayKeys.length ? dayKeys[dayKeys.length - 1].slice(0, 7) : '2026-11';
 let calSel = dayKeys.length ? dayKeys[dayKeys.length - 1] : null;
