@@ -1060,6 +1060,8 @@ async function setupUploads() {
   db.collection('delays').onSnapshot(snap => {
     if (dlPending > 0) return;
     const d = snap.docs.find(x => x.id === 'current');
+    const at = d && d.data() && d.data().updated;
+    if (at && dlLastSaved && at < dlLastSaved) return;
     const items = d && d.data() && d.data().items;
     if (Array.isArray(items)) DELAYS = items;
     renderDelays();
@@ -1266,13 +1268,15 @@ function renderDelays() {
   else if (!CAN_EDIT) msg.textContent = 'View only. Open the private page to add, edit or remove delays.';
   else if (!msg.dataset.keep) msg.textContent = '';
 }
-let dlPending = 0;
+let dlPending = 0, dlLastSaved = '';
 function saveDelays(msgText) {
   const msg = document.getElementById('dl-msg');
   if (!DELAY_DB) return;
   msg.textContent = 'Saving…';
   dlPending++;
-  DELAY_DB.collection('delays').doc('current').set({ items: DELAYS.filter(x => x && x.trim()), updated: new Date().toISOString() })
+  const stamp = new Date().toISOString();
+  dlLastSaved = stamp;
+  DELAY_DB.collection('delays').doc('current').set({ items: DELAYS.filter(x => x && x.trim()), updated: stamp })
     .then(() => { dlPending--; msg.textContent = msgText || 'Saved.'; })
     .catch(() => { dlPending--; msg.textContent = 'Could not save this change. Check your connection and try again.'; });
 }
