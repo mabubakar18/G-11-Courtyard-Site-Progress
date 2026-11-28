@@ -366,6 +366,8 @@ td.sec,th.sec{border-left:3px solid var(--green)!important}
 body.public .panel[data-panel="rooms"],body.public .panel[data-panel="open"]{display:none!important}
 body.public .dock button[data-go="rooms"],body.public .sheet .item[data-tab="rooms"],body.public .sheet .item[data-tab="open"]{display:none!important}
 body.public .refresh-fab{display:none!important}
+body.public .dock{grid-template-columns:repeat(4,1fr)!important}
+body.public #ask[aria-disabled="true"]{display:none!important}
 </style>
 </head>
 <body class="public">
@@ -488,25 +490,8 @@ body.public .refresh-fab{display:none!important}
   </div>
 </section>
 
-<!-- ROOMS -->
-<section class="panel" data-panel="rooms" id="p-rooms" hidden>
-  <div class="card">
-    <div class="banner" style="--img:url('hero.jpg')"></div>
-    <div class="tabset c-glance" id="tabset-rooms"><div class="tabbar" id="chips-rooms" role="tablist"></div></div>
-    <div id="sub-room" class="sub">
-      <h2>Guest rooms</h2>
-      <div class="controls">
-        <label>Floor <select id="fFloor"></select></label>
-        <label>Room number <input id="fSearch" type="search" placeholder="e.g. 415" inputmode="numeric"></label>
-        <div class="count" id="count"></div>
-      </div>
-      <div class="scroll tall"><table id="rooms"></table></div>
-    </div>
-    <div id="sub-types" class="sub" hidden>
-      <div class="scroll"><table id="types"></table></div>
-    </div>
-  </div>
-</section>
+<!-- ROOMS (not published) -->
+<section class="panel" data-panel="rooms" id="p-rooms" hidden><div class="card"><div class="tabset" id="tabset-rooms" hidden><div class="tabbar" id="chips-rooms"></div></div><div id="sub-room" class="sub" hidden><select id="fFloor"></select><input id="fSearch" type="search"><div class="count" id="count"></div><table id="rooms"></table></div><div id="sub-types" class="sub" hidden><table id="types"></table></div></div></section>
 
 <!-- LOG -->
 <section class="panel" data-panel="log" id="p-log" hidden>
@@ -545,24 +530,8 @@ body.public .refresh-fab{display:none!important}
   </div>
 </section>
 
-<!-- OPEN POINTS -->
-<section class="panel" data-panel="open" id="p-open" hidden>
-  <div class="card">
-    <div class="banner" style="--img:url('hero.jpg')"></div>
-    <h2>Open points</h2>
-    <div style="margin-top:12px">
-    <div class="open"><span class="tag">Sequence</span><b>Waterproofing and caulking show 0% while block work is 100%.</b> Washroom waterproofing normally follows block work and comes before tiling. Either it has not started, or it is not being recorded.</div>
-    <div class="open"><span class="tag">Sequence</span><b>1st fix (conduits) shows 0% while plaster is 98%.</b> Conduits are usually run before plaster closes the walls. Either the first fix is recorded elsewhere, or it is behind.</div>
-    <div class="open"><span class="tag">Gap</span><b>Finishing and woodworks have no progress.</b> Windows, marble sills, gypsum ceilings, washroom tiling, paint, doors, wardrobes and hardware all read 0% or blank. Confirm whether this is real or not yet logged.</div>
-    <div class="open"><span class="tag">Floor</span><b>8th floor screed is 55%.</b> The other guest floors are at 95 to 97%.</div>
-    <div class="open"><span class="tag">Drawings</span><b>Window quantities are missing on the mezzanine.</b> One window type (AW3) has no quantity, and some rows on the 9th floor are blank.</div>
-    <div class="open"><span class="tag">Design</span><b>Items on hold.</b> The 9th-floor pool zone and facade, and the marble design change, are on hold. Work in these areas should not be counted as scheduled.</div>
-    <div class="open gap"><span class="tag">Record</span><b>One snapshot, no dates per activity.</b> Without a dated record, the rate of progress and the finish date cannot be worked out.</div>
-    <div class="open gap"><span class="tag">Scope</span><b>No contract completion or Marriott opening date is recorded.</b> Adding them would let progress be measured against a target.</div>
-    <div class="open ok"><span class="tag">Done</span><b>Plaster on the guest floors is about 98%.</b> Block work is complete on all floors. Floor screed is 95 to 97%, except the 8th floor.</div>
-    </div>
-  </div>
-</section>
+<!-- OPEN POINTS (not published) -->
+<section class="panel" data-panel="open" id="p-open" hidden></section>
 
 <!-- ABOUT -->
 <section class="panel" data-panel="about" id="p-about" hidden>
@@ -601,7 +570,7 @@ body.public .refresh-fab{display:none!important}
   <button data-go="home" aria-label="Home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Home</button>
   <button data-go="today" aria-label="Today"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="3"/><circle cx="12" cy="13" r="3.5"/><path d="M8.5 6l1.5-2h4l1.5 2"/></svg>Today</button>
   <button data-menu="progress" aria-label="Progress"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Progress</button>
-  <button data-go="rooms" aria-label="Guest rooms"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>Guest rooms</button>
+  
   <button data-menu="more" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>More</button>
 </nav>
 
@@ -635,10 +604,10 @@ body.public .refresh-fab{display:none!important}
 
 <div class="sheet" id="sheet-more" role="dialog" aria-label="More">
   <div class="grab"></div><h3>More</h3>
-  <button class="item" data-tab="rooms" data-sub="types">Room types</button>
+  
   <button class="item" data-tab="log">Weekly log</button>
   <button class="item" data-tab="design">Design renders</button>
-  <button class="item" data-tab="open">Open points</button>
+  
   <button class="item" data-tab="about">About IMARAT</button>
 </div>
 
@@ -1319,8 +1288,8 @@ function dlRender() {
     ul.innerHTML = DL.items.map((t, i) => '<li><span class="dl-no">' + (i + 1) + '.</span><span class="dl-txt">' + esc(t) + '</span></li>').join('');
   }
   document.getElementById('dl-add').hidden = !DL.editable;
-  if (!DL.loaded) dlStatus('Loading…');
-  else if (!DL.editable) dlStatus('View only. Open the private page to add, edit or remove delays.');
+  if (!DL.loaded) dlStatus(document.body.classList.contains('public') ? '' : 'Loading…');
+  else if (!DL.editable) dlStatus(document.body.classList.contains('public') ? '' : 'View only. Open the private page to add, edit or remove delays.');
   else if (document.getElementById('dl-msg').textContent === 'Loading…') dlStatus('');
 }
 async function dlWrite(okText) {
