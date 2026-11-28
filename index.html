@@ -285,7 +285,7 @@ td.sec,th.sec{border-left:3px solid var(--green)!important}
 /* Home summary and critical delays */
 .hs-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px}
 .hs-head h2{margin:0}
-.hs-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.hs-grid{display:block;margin-top:12px}
 .hs-tile{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;min-width:0}
 .hs-title{display:flex;justify-content:space-between;align-items:baseline;gap:8px;color:var(--green);text-decoration:none;font-family:var(--display);font-weight:700;font-size:16px}
 .hs-title b{font-size:18px}
@@ -303,10 +303,11 @@ td.sec,th.sec{border-left:3px solid var(--green)!important}
 .dl-rm{width:34px;height:34px;margin-left:6px;border:1px solid var(--line);background:var(--card);border-radius:8px;cursor:pointer;font-size:18px}
 .dl-add{display:flex;gap:8px;margin-top:10px}
 .dl-add input{flex:1;min-width:0;font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px}
-@media (max-width:480px){.hs-grid{grid-template-columns:1fr}}
+
 
 /* Compact home summary */
-.gl-sec{margin-top:12px}
+.gl-sec{margin-top:16px}
+.gl-sec:first-child{margin-top:12px}
 .gl-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;color:var(--green);text-decoration:none;font-family:var(--display);font-weight:700;font-size:15px;padding-bottom:4px;border-bottom:2px solid var(--green-3)}
 .gl-head b{font-size:15px}
 .gl-focus .gl-head{font-size:17px}
@@ -337,16 +338,6 @@ td.sec,th.sec{border-left:3px solid var(--green)!important}
 
 <!-- HOME -->
 <section class="panel" data-panel="home" id="p-home">
-  <div class="card hs-card" id="home-summary">
-    <div class="hs-head"><h2>At a glance</h2><span class="muted">As of <b id="hs-asof"></b></span></div>
-    <div class="hs-grid" id="hs-grid"></div>
-  </div>
-  <div class="card dl-card" id="delays-card">
-    <h2>Critical delays</h2>
-    <ul class="dl-list" id="dl-list"></ul>
-    <form class="dl-add" id="dl-add" hidden><input type="text" id="dl-in" maxlength="200" placeholder="Add a delay" aria-label="New delay"><button type="submit" class="btn">Add</button></form>
-    <p class="muted" id="dl-msg" aria-live="polite"></p>
-  </div>
   <div class="card">
     <div class="banner" style="--img:url('hero.jpg')"></div>
     <h2>Project overview</h2>
@@ -400,6 +391,16 @@ td.sec,th.sec{border-left:3px solid var(--green)!important}
         <tr><td class="name">Roof</td><td>To +138'-11"</td><td class="wide">Chillers and plant, pumps, boilers, overhead water tanks, fire-fighting tank</td></tr>
       </tbody>
     </table></div>
+  </div>
+  <div class="card hs-card" id="home-summary">
+    <div class="hs-head"><h2>Overall Project Summary</h2><span class="muted">As of <b id="hs-asof"></b></span></div>
+    <div class="hs-grid" id="hs-grid"></div>
+  </div>
+  <div class="card dl-card" id="delays-card">
+    <h2>Critical delays</h2>
+    <ul class="dl-list" id="dl-list"></ul>
+    <form class="dl-add" id="dl-add" hidden><input type="text" id="dl-in" maxlength="200" placeholder="Add a delay" aria-label="New delay"><button type="submit" class="btn">Add</button></form>
+    <p class="muted" id="dl-msg" aria-live="polite"></p>
   </div>
 </section>
 
@@ -1141,13 +1142,15 @@ const DELAYS_STATIC = []
 ;
 let DELAYS = DELAYS_STATIC.slice();
 let DELAY_DB = null;
-const GL_ELEV = [
-  { title: 'Plaster, elevations', key: 'plaster', sub: 'plaster' },
-  { title: 'Plaster, courtyard', key: 'court_plaster', sub: 'plaster' },
-  { title: 'Gutka, elevations', key: 'gutka', sub: 'gutka' },
-  { title: 'Marble, elevations', key: 'marble', sub: 'gutka' },
-  { title: 'Gutka, courtyard', key: 'court_gutka', sub: 'gutka' },
+const GL_EXT = [
+  { title: 'Plaster', key: 'plaster', sub: 'plaster' },
+  { title: 'Gutka', key: 'gutka', sub: 'gutka' },
+  { title: 'Marble', key: 'marble', sub: 'gutka' },
   { title: 'Staircases', key: 'stairs', sub: 'plaster' }
+];
+const GL_COURT = [
+  { title: 'Plaster', key: 'court_plaster', sub: 'plaster' },
+  { title: 'Gutka', key: 'court_gutka', sub: 'gutka' }
 ];
 const GL_WORKS = [
   { title: 'Grey structure', sub: 'grey', heads: [0, 1, 2, 3, 4] },
@@ -1159,22 +1162,27 @@ function glRow(href, title, v) {
   const w = typeof v === 'number' ? Math.round(v * 100) : 0;
   return '<li><a href="' + href + '"><span>' + esc(title) + '</span><i class="gl-bar" aria-hidden="true"><u style="width:' + w + '%"></u></i><b class="' + cls(v) + '">' + pctLabel(v) + '</b></a></li>';
 }
+function glSection(href, title, rows, avg) {
+  return '<section class="gl-sec"><a class="gl-head" href="' + href + '"><span>' + esc(title) + '</span><b class="' + cls(avg) + '">' + pctLabel(avg) + '</b></a><ul class="gl-list">' + rows + '</ul></section>';
+}
 function renderSummary() {
   const key = dayKeys.length ? dayKeys[dayKeys.length - 1] : null;
   document.getElementById('hs-asof').textContent = key ? fmtDate(key) : 'no record yet';
   const rec = latestRec();
   const valsOf = r => (rec && rec.rows && rec.rows[r.room]) || r.vals;
   const headAvg = i => { const v = DATA.rooms.map(r => valsOf(r)[i]).filter(x => x !== null && x !== undefined); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
-  const groupAvg = heads => { const a = heads.map(headAvg).filter(x => x !== null); return a.length ? a.reduce((x, y) => x + y, 0) / a.length : null; };
-  const stairVals = STAIRS.stairs.map((_, i) => elevAvgOf('stair' + (i + 1), 3)).filter(x => x !== null);
-  const stairAvg = stairVals.length ? stairVals.reduce((a, b) => a + b, 0) / stairVals.length : null;
-  const elevVals = GL_ELEV.map(e => e.key === 'stairs' ? stairAvg : elevAvgOf(e.key, e.key.startsWith('stair') ? 3 : 4)).filter(x => x !== null);
-  const elevOverall = elevVals.length ? elevVals.reduce((a, b) => a + b, 0) / elevVals.length : null;
-  const elevRows = GL_ELEV.map(e => glRow('#progress/' + e.sub, e.title, e.key === 'stairs' ? stairAvg : elevAvgOf(e.key, 4))).join('');
+  const avgOf = list => { const a = list.filter(x => typeof x === 'number'); return a.length ? a.reduce((x, y) => x + y, 0) / a.length : null; };
+  const groupAvg = heads => avgOf(heads.map(headAvg));
+  const stairAvg = avgOf(STAIRS.stairs.map((_, i) => elevAvgOf('stair' + (i + 1), 3)));
+  const val = e => e.key === 'stairs' ? stairAvg : elevAvgOf(e.key, e.key.startsWith('stair') ? 3 : 4);
+  const extVals = GL_EXT.map(val), courtVals = GL_COURT.map(val);
+  const extRows = GL_EXT.map((e, i) => glRow('#progress/' + e.sub, e.title, extVals[i])).join('');
+  const courtRows = GL_COURT.map((e, i) => glRow('#progress/' + e.sub, e.title, courtVals[i])).join('');
   const workRows = GL_WORKS.map(t => glRow('#progress/' + t.sub, t.title, groupAvg(t.heads))).join('');
   document.getElementById('hs-grid').innerHTML =
-    '<section class="gl-sec gl-focus"><a class="gl-head" href="#progress/plaster"><span>Elevations</span><b class="' + cls(elevOverall) + '">' + pctLabel(elevOverall) + '</b></a><ul class="gl-list">' + elevRows + '</ul></section>' +
-    '<section class="gl-sec"><a class="gl-head" href="#progress/grey"><span>Structure and services</span></a><ul class="gl-list">' + workRows + '</ul></section>';
+    glSection('#progress/plaster', 'External finishes', extRows, avgOf(extVals)) +
+    glSection('#progress/plaster', 'Courtyard finishes', courtRows, avgOf(courtVals)) +
+    glSection('#progress/grey', 'Structure and services', workRows, avgOf(GL_WORKS.map(t => groupAvg(t.heads))));
 }
 function renderDelays() {
   const ul = document.getElementById('dl-list');
